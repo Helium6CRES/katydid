@@ -5,16 +5,16 @@
  *      Author: nsoblath
  */
 
-#include "KTEggReader.hh"
+#include "KTSpecReader.hh"
 
 namespace Katydid
 {
 
-    KTEggReader::KTEggReader()
+    KTSpecReader::KTSpecReader()
     {
     }
 
-    KTEggReader::~KTEggReader()
+    KTSpecReader::~KTSpecReader()
     {
     }
 

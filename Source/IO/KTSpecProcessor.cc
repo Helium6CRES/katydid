@@ -1,11 +1,14 @@
+#include<iostream>
 #include <fstream>
 #include "KTSpecProcessor.hh"
 #include "KTCommandLineOption.hh"
 #include "KTData.hh"
 #include "KTProcSummary.hh"
+#include "KTPowerSpectrum.hh"
 #include "KTPowerSpectrumData.hh"
 
 using std::string;
+using namespace std;
 
 namespace Katydid
 {
@@ -20,12 +23,13 @@ namespace Katydid
             KTPrimaryProcessor(name),
             fProgressReportInterval(1),
             fFilenames(),
-            fFreqChannels(8192),
-            fMinFreq(0.),
-            fMaxFreq(2000.0),
-            fBinWidth = (fMaxFreq - fMinFreq) / fFreqChannels,
-            fHeaderSignal("header", this),
-            fDataSignal("psd", this),
+            //fFreqChannels(8192),
+            //fNSpectra(0),
+            //fMinFreq(0.),
+            //fMaxFreq(1600.0),
+            //fBinWidth ((fMaxFreq - fMinFreq)/fFreqChannels),
+            //fHeaderSignal("header", this),
+            fDataSignal("psd", this)
     {
     }
 
@@ -66,7 +70,6 @@ namespace Katydid
         return true;
     }
 
-
     bool KTSpecProcessor::ProcessSpec()
     {
         if (fFilenames.size() == 0)
@@ -75,14 +78,13 @@ namespace Katydid
             return false;
         }
 
-        //fstream::open(fFilenames[0].native());
-        //fCurrentFileIt = fFilenames.begin();
-
         // open the file and load its contents into memblock
         KTINFO(speclog, "Opening spec file <" << fFilenames[0] << ">");
         streampos size;
         char * memblock;
-        fstream file (fFilenames[0], ios::in|ios::binary|ios::ate);
+        //ifstream file ("/home/brent/Desktop/SpecFiles/Freq_data_2020-03-25-17-36-18_000000.spec", ios::in|ios::binary|ios::ate);
+
+        std::ifstream file(fFilenames[0].c_str(), ios::in|ios::binary|ios::ate);
         if (file.is_open())
         {
             size = file.tellg();
@@ -91,28 +93,40 @@ namespace Katydid
             file.read (memblock, size);
             file.close();
         }
-        KTINFO(speclog, "Spec file has been opened and read");
 
-        KTDEBUG(speclog, "Parsing Spec file header");
+        int a [8192];
+        for (int x = 0; x < 8192; x++)
+            {
+            a[x] =  memblock[x+32];
+            }
+
+        //KTINFO(speclog, "Spec file has been opened and read");
+
+        //KTDEBUG(speclog, "Parsing Spec file header");
         //read header
-        KTDEBUG(speclog, "Parsed header:\n" << fHeader);
+        //KTDEBUG(speclog, "Parsed header:\n" << fHeader);
 
-        KTSpecHeader& header = headerPtr->Of< KTEggHeader >();
+        //KTSpecHeader& header = headerPtr->Of< KTEggHeader >();
 
-        fHeaderSignal(headerPtr);
+        //fHeaderSignal(headerPtr);
 
-        Nymph::KTDataPtr newData(new Nymph::KTData());
+        //initialize an object of type KTPowerSpectrum with all 0
+        //values and 8192 channels from 0 to 1600 MHz
+        size_t bins = 8192;
+        double min = 0.0;
+        double max = 1600.00;
+        KTPowerSpectrum newSlice(a, bins, min, max);
+
+        Nymph::KTDataPtr data(new Nymph::KTData());
+        unsigned comp = 1;
+        KTPowerSpectrumData& psData = data->Of< KTPowerSpectrumData >().SetNComponents(comp);
+
+        psData.SetSpectrum(&newSlice, comp);
+
+        fDataSignal(data);
 
         delete[] memblock;
 
-        // finally, set the records in the new data object
-        KTPowerSpectrumData& psData = newData->Of< KTRawPowerSpectrumData >().SetNComponents(nChannels);
-        for (unsigned iChannel = 0; iChannel < nChannels; ++iChannel)
-        {
-            psData.SetTimeSeries(newSlices[iChannel], iChannel);
-        }
-
-        fDataSignal(psData);
         return true;
     }
 

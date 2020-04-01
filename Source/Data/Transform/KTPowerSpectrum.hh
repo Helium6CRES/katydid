@@ -17,7 +17,7 @@
 
 namespace Katydid
 {
-    
+
 
     class KTPowerSpectrum : public KTPhysicalArray< 1, double >, public KTFrequencyDomainArray
     {
@@ -30,7 +30,7 @@ namespace Katydid
 
         public:
             KTPowerSpectrum(size_t nBins=1, double rangeMin=0., double rangeMax=1.);
-            KTPowerSpectrum(double value, size_t nBins, double rangeMin=0., double rangeMax=1.);
+            KTPowerSpectrum(int values[], size_t nBins= 8192, double rangeMin=0., double rangeMax=1600.0);
             KTPowerSpectrum(const KTPowerSpectrum& orig);
             virtual ~KTPowerSpectrum();
 

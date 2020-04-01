@@ -3,7 +3,8 @@
 
 #include "KTPrimaryProcessor.hh"
 #include "KTData.hh"
-#include "KTSpecHeader.hh"
+//#include "KTSpecHeader.hh"
+#include "KTSpecReader.hh"
 #include "KTSlot.hh"
 
 namespace Katydid
@@ -50,13 +51,12 @@ namespace Katydid
 
             bool ProcessSpec();
 
-
             MEMBERVARIABLE(unsigned, ProgressReportInterval);
 
             MEMBERVARIABLEREF(KTSpecReader::path_vec, Filenames);
 
         private:
-            Nymph::KTSignalData fHeaderSignal;
+            //Nymph::KTSignalData fHeaderSignal;
             Nymph::KTSignalData fDataSignal;
 
 
@@ -70,4 +70,4 @@ namespace Katydid
 
 } /* namespace Katydid */
 
-#endif /* KTEGGPROCESSOR_HH_ */
+#endif /* KTSPECPROCESSOR_HH_ */

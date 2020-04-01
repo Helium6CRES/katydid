@@ -23,12 +23,21 @@ namespace Katydid
         SetDataLabel("Power (W)");
     }
 
-    KTPowerSpectrum::KTPowerSpectrum(double value, size_t nBins, double rangeMin, double rangeMax) :
+    //KTPowerSpectrum::KTPowerSpectrum(double value, size_t nBins, double rangeMin, double rangeMax) :
+    //        KTPowerSpectrum(nBins, rangeMin, rangeMax)
+    //{
+    //    for (unsigned index = 0; index < nBins; ++index)
+    //    {
+    //        fData[index] = value;
+    //    }
+    //}
+
+    KTPowerSpectrum::KTPowerSpectrum(int values[], size_t nBins, double rangeMin, double rangeMax) :
             KTPowerSpectrum(nBins, rangeMin, rangeMax)
     {
         for (unsigned index = 0; index < nBins; ++index)
         {
-            fData[index] = value;
+            fData[index] = values[index];
         }
     }
 

@@ -23,7 +23,7 @@ processor-toolbox:
       - egg
 
 egg:
-    filename: "/path/to/file.egg"
+    filename: "../Project8_Data/test_kr_0_01-03-17_eth1.egg"
     egg-reader: egg3
     slice-size: 16384
     number-of-slices: 1
@@ -32,5 +32,5 @@ fft:
     transform-flag: ESTIMATE
 
 writer:
-    output-file: "/path/to/file.root"
+    output-file: "../Project8_Data/test_kr_0_01-03-17_eth1.root"
     file-flag: recreate
