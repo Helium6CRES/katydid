@@ -1,0 +1,21 @@
+processor-toolbox:
+    processors:
+      - type: spec-processor
+        name: spec
+      - type: basic-root-writer
+        name: writer
+
+    connections:
+      - signal: "spec:ps"
+        slot: "writer:ps"
+
+    run-queue:
+      - spec
+
+spec:
+    filename: "../Project8_Data/Freq_data_2020-03-25-17-36-18_000000.spec"
+    number-of-slices: 1
+
+writer:
+    output-file: "../Project8_Data/Freq_data_2020-03-25-17-36-18_000000.root"
+    file-flag: recreate
