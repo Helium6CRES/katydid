@@ -44,6 +44,7 @@ namespace Katydid
     {
         public:
             KTSpecProcessor(const std::string& name = "spec-processor");
+            virtual ~KTSpecProcessor();
 
             bool Configure(const scarab::param_node* node);
 

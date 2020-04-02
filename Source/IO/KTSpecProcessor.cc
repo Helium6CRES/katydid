@@ -29,7 +29,11 @@ namespace Katydid
             //fMaxFreq(1600.0),
             //fBinWidth ((fMaxFreq - fMinFreq)/fFreqChannels),
             //fHeaderSignal("header", this),
-            fDataSignal("psd", this)
+            fDataSignal("ps", this)
+    {
+    }
+
+    KTSpecProcessor::~KTSpecProcessor()
     {
     }
 
@@ -100,7 +104,7 @@ namespace Katydid
             a[x] =  memblock[x+32];
             }
 
-        //KTINFO(speclog, "Spec file has been opened and read");
+        KTINFO(speclog, "Spec file <" << fFilenames[0] << "> opened and read");
 
         //KTDEBUG(speclog, "Parsing Spec file header");
         //read header
@@ -121,13 +125,18 @@ namespace Katydid
         unsigned comp = 1;
         KTPowerSpectrumData& psData = data->Of< KTPowerSpectrumData >().SetNComponents(comp);
 
+        KTINFO(speclog, "Setting spectrum object");
         psData.SetSpectrum(&newSlice, comp);
 
+        KTINFO(speclog, "Output data signal");
         fDataSignal(data);
+        KTINFO(speclog, "Data signal output");
 
-        delete[] memblock;
+        //delete[] memblock;
 
         return true;
     }
+
+
 
 } /* namespace Katydid */
