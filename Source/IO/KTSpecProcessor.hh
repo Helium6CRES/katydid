@@ -57,7 +57,14 @@ namespace Katydid
             MEMBERVARIABLEREF(KTSpecReader::path_vec, Filenames);
 
         private:
+            int fNSpectra;
+            int fPacketHeaderSize;
+            size_t fFreqBins;
+            double fFreqMin;
+            double fFreqMax;
+
             //Nymph::KTSignalData fHeaderSignal;
+
             Nymph::KTSignalData fDataSignal;
 
 

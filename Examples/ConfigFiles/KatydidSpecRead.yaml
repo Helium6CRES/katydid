@@ -14,7 +14,11 @@ processor-toolbox:
 
 spec:
     filename: "../Project8_Data/Freq_data_2020-03-25-17-36-18_000000.spec"
-    number-of-slices: 1
+    spectra: 10
+    freq-bins: 8192
+    min-freq: 0.0
+    max-freq: 1600.00
+    header-bytes: 32
 
 writer:
     output-file: "../Project8_Data/Freq_data_2020-03-25-17-36-18_000000.root"
