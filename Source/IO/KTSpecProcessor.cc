@@ -135,9 +135,7 @@ namespace Katydid
                 //values and 8192 Bins from 0 to 1600 MHz
 
                 newSpec[0] = new KTPowerSpectrum(a, fFreqBins, fFreqMin, fFreqMax);
-                //KTPowerSpectrum newSlice(a, fFreqBins, fFreqMin, fFreqMax);
 
-                //Nymph::KTDataPtr data(new Nymph::KTData());
                 unsigned comp = 1;
                 KTPowerSpectrumData& psData = data->Of< KTPowerSpectrumData >().SetNComponents(comp);
 
