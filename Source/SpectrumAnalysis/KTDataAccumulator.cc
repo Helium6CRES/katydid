@@ -328,7 +328,7 @@ namespace Katydid
 
                 KTFrequencySpectrumPolar* newFS = new KTFrequencySpectrumPolar(dataFS->size(), dataFS->GetRangeMin(), dataFS->GetRangeMax());
                 KTFrequencySpectrumVariance* newVarFS = new KTFrequencySpectrumVariance(dataFS->size(), dataFS->GetRangeMin(), dataFS->GetRangeMax());
-                
+
                 newFS->SetNTimeBins(dataFS->GetNTimeBins());
                 newFS->operator*=(double(0.));
                 newVarFS->operator*=(double(0.));
@@ -395,10 +395,10 @@ namespace Katydid
             for (unsigned iComponent = 0; iComponent < nComponents; ++iComponent)
             {
                 KTFrequencySpectrumFFTW* dataFS = data.GetSpectrumFFTW(iComponent);
-                
+
                 KTFrequencySpectrumFFTW* newFS = new KTFrequencySpectrumFFTW(dataFS->size(), dataFS->GetRangeMin(), dataFS->GetRangeMax());
                 KTFrequencySpectrumVariance* newVarFS = new KTFrequencySpectrumVariance(dataFS->size(), dataFS->GetRangeMin(), dataFS->GetRangeMax());
-                
+
                 newFS->SetNTimeBins(dataFS->GetNTimeBins());
                 newFS->operator*=(double(0.));
                 newVarFS->operator*=(double(0.));
@@ -460,6 +460,8 @@ namespace Katydid
         KTDEBUG(avlog, "Accumulating a power spectrum; remainingFrac = " << remainingFrac << "   fAveragingFrac = " << fAveragingFrac);
 
         unsigned nComponents = data.GetNComponents();
+
+        KTDEBUG(avlog, "Power spectrum components = " << nComponents);
 
         if (accDataStruct.GetSliceNumber() == 0)
         {

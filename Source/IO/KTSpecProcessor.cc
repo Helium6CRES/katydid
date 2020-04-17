@@ -27,7 +27,8 @@ namespace Katydid
             fNSpectra(0),
             fFreqMin(0.),
             fFreqMax(1600.0),
-            fDataSignal("ps", this)
+            fDataSignal("ps", this),
+            fSpecDoneSignal("spec-done", this)
     {
     }
 
@@ -136,7 +137,7 @@ namespace Katydid
 
                 newSpec[0] = new KTPowerSpectrum(a, fFreqBins, fFreqMin, fFreqMax);
 
-                unsigned comp = 1;
+                unsigned comp = 0;
                 KTPowerSpectrumData& psData = data->Of< KTPowerSpectrumData >().SetNComponents(comp);
 
                 KTINFO(speclog, "Setting spectrum object");
@@ -146,7 +147,7 @@ namespace Katydid
                 fDataSignal(data);
                 KTINFO(speclog, "Data signal output");
             }
-            //delete[] memblock;
+            fSpecDoneSignal();
         }
         file.close();
         return true;

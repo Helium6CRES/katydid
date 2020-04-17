@@ -63,9 +63,8 @@ namespace Katydid
             double fFreqMin;
             double fFreqMax;
 
-            //Nymph::KTSignalData fHeaderSignal;
-
             Nymph::KTSignalData fDataSignal;
+            Nymph::KTSignalOneArg< void > fSpecDoneSignal;
 
 
     };

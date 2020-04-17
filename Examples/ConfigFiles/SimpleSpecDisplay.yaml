@@ -2,24 +2,28 @@ processor-toolbox:
     processors:
       - type: spec-processor
         name: spec
-      - type: basic-root-writer
-        name: writer
+      - type: root-spectrogram-writer
+        name: writer    
 
     connections:
       - signal: "spec:ps"
-        slot: "writer:ps"
+        slot: "writer:ps"    
 
     run-queue:
       - spec
 
 spec:
     filename: "../He6_Data/Fake_bootstrap_2020-04-10-15-29-48_000000.spec"
-    spectra: 1600
+    spectra: 1600   
     freq-bins: 8192
-    min-freq: 0.0
-    max-freq: 1600.00
+    min-freq: 0
+    max-freq: 1.6e9
     header-bytes: 32
 
 writer:
-    output-file: "../He6_Data/Fake_bootstrap_2020-04-10-15-29-48_000000.root"
+    output-file: "../He6_Data/simplespectrogram.root"
     file-flag: recreate
+    min-time: 0.0
+    max-time: 0.01
+    min-freq: 0
+    max-freq: 1.6e9
