@@ -13,13 +13,13 @@ processor-toolbox:
       - spec
 
 spec:
-    filename: "../He6_Data/Fake_bootstrap_2020-04-10-15-29-48_000000.spec"
-    spectra: 1600
+    filename: "../He6_Data/Fake_bootstrap_2020-04-10-15-32-55_000001.spec"
+    spectra: 100
     freq-bins: 8192
     min-freq: 0.0
-    max-freq: 1600.00
+    max-freq: 1.6e9
     header-bytes: 32
 
 writer:
-    output-file: "../He6_Data/Fake_bootstrap_2020-04-10-15-29-48_000000.root"
+    output-file: "../He6_Data/KatydidSpecRead.root"
     file-flag: recreate

@@ -33,7 +33,7 @@
 
 namespace Katydid
 {
-    
+
     KTLOGGER(avlog_hh, "KTDataAccumulator.hh");
 
     /*!
@@ -50,12 +50,12 @@ namespace Katydid
      For slice i, the data received by the accumulator is D_i, and the average A_i is:
        A_i = A_(i-1) * (S-1)/S + D_i / S
      where S is the size of the accumulator.
-     
-     Note that this method of calculating A_i gives an effective average of S slices:  
+
+     Note that this method of calculating A_i gives an effective average of S slices:
      At slice i, the amount removed from the previous sum is (1 / S) * A_(i-1) instead of (1 / S) * D_(i-N).
      The effective average will be closest to the true average for large N.
-     
-     The signal interval is how often the output signal will be emitted.  
+
+     The signal interval is how often the output signal will be emitted.
      If the signal interval is 0, there will be no slice signals.
 
      When the size of the accumulator is not specified, and during accumulation,
@@ -100,7 +100,7 @@ namespace Katydid
      - "conv-fs-polar-finished": void (Nymph::KTDataPtr) -- emitted when the last data is received; guarantees KTConvolvedFrequencySpectrumDataPolar
      - "conv-fs-fftw-finished": void (Nymph::KTDataPtr) -- emitted when the last data is received; guarantees KTConvolvedFrequencySpectrumDataFFTW
      - "conv-ps-finished": void (Nymph::KTDataPtr) -- emitted when the last data is received; guarantees KTConvolvedPowerSpectrumData
-     
+
 
     */
 
@@ -413,6 +413,7 @@ namespace Katydid
             KTDEBUG(avlog_hh, "Creating new Accumulator for " << DemangledName(dataType));
             fLastAccumulatorPtr = new KTDataAccumulator::AccumulatorType< XDataType >();
             fLastAccumulatorPtr->fAccumulatorSize = fAccumulatorSize;
+            KTDEBUG(avlog_hh, "Accumulator size = " << fAccumulatorSize);
             fDataMap[&dataType] = fLastAccumulatorPtr;
         }
         return *fLastAccumulatorPtr;
@@ -440,8 +441,10 @@ namespace Katydid
         {
             sigIt->second.fSignalCount++;
             unsigned sigCount = sigIt->second.fSignalCount;
+            KTDEBUG(avlog_hh, "Signal count = " << sigCount);
             if (sigCount == fSignalInterval)
             {
+                KTDEBUG(avlog_hh, "Emitting interval signal");
                 (*sigIt->second.fAccumulatingSignal)(fLastAccumulatorPtr->fData);
                 sigIt->second.fSignalCount = 0;
             }

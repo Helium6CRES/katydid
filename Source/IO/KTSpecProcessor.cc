@@ -26,7 +26,7 @@ namespace Katydid
             fFreqBins(8192),
             fNSpectra(0),
             fFreqMin(0.),
-            fFreqMax(1600.0),
+            fFreqMax(1.6E09),
             fDataSignal("ps", this),
             fSpecDoneSignal("spec-done", this)
     {
@@ -100,54 +100,57 @@ namespace Katydid
         if (file.is_open())
         {
             KTINFO(speclog, "Spec file <" << fFilenames[0] << "> opened");
-            int a [fFreqBins]; //holder array for spectrum data
+            uint a; //spectra must be treated as unsigned 8-bit values (0-255)
+            int slice[fFreqBins]; //holder array for spectrum data
             int position = 0; //variable for read position start
             int blockSize = fPacketHeaderSize+fFreqBins; //add header length
 
             //declare array of 1-byte chars to read from binary file
             char memblock [blockSize];
 
-          vector <KTPowerSpectrum*> newSpec(1);
+            vector <KTPowerSpectrum*> newSpec(1);
 
             //loop over # of spectra to be read
             for(int i = 0; i < fNSpectra; i++)
             {
-                KTINFO(speclog, "Preparing to read next spectrum");
+                if (i == 0) KTINFO(speclog, "Preparing to read first spectrum");
                 position = i*(blockSize);
                 file.seekg (position, ios::beg); //set read pointer location
                 file.read (memblock, blockSize); //read 1 spectrum of data
 
-                //cast 1-byte chars to 4-byte ints
                 for (int x = 0; x < fFreqBins; x++)
                 {
-                    a[x] =  memblock[x+fPacketHeaderSize];
+                    a =  memblock[x+fPacketHeaderSize];
+                    slice[x] = a;
                 }
-
-
-                //KTDEBUG(speclog, "Parsing Spec file header");
-                //read header
-                //KTDEBUG(speclog, "Parsed header:\n" << fHeader);
-
-                //KTSpecHeader& header = headerPtr->Of< KTEggHeader >();
-
-                //fHeaderSignal(headerPtr);
+                KTINFO(speclog, "Spectrum values  = " << slice[0] << " "
+                << slice[1000] << " " << slice[2000] << " " << slice[3000]
+                << " " << slice[4000] << " " << slice[5000] << " "
+                << slice[6000] << " " << slice[7000] << " " << slice[8000]);
 
                 //initialize an object of type KTPowerSpectrum with all 0
                 //values and 8192 Bins from 0 to 1600 MHz
+                newSpec[0] = new KTPowerSpectrum(slice, fFreqBins, fFreqMin, fFreqMax);
 
-                newSpec[0] = new KTPowerSpectrum(a, fFreqBins, fFreqMin, fFreqMax);
+                KTPowerSpectrumData& psData = data->Of< KTPowerSpectrumData >().SetNComponents(1);
 
                 unsigned comp = 0;
-                KTPowerSpectrumData& psData = data->Of< KTPowerSpectrumData >().SetNComponents(comp);
 
-                KTINFO(speclog, "Setting spectrum object");
                 psData.SetSpectrum(newSpec[0], comp);
+                if (i == 0) KTINFO(speclog, "Set first spectrum object");
 
-                KTINFO(speclog, "Output data signal");
+                if(i == fNSpectra -1)
+                {
+                    data->Of< Nymph::KTData >().SetLastData(true);
+                    KTINFO(speclog, "fLastData set to TRUE");
+                }
+
                 fDataSignal(data);
-                KTINFO(speclog, "Data signal output");
+                if (i == 0) KTINFO(speclog, "First spectrum data signal output");
+
             }
             fSpecDoneSignal();
+            KTINFO(speclog, "Spec-done signal output");
         }
         file.close();
         return true;

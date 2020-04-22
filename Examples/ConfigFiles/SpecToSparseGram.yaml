@@ -2,39 +2,48 @@ processor-toolbox:
 
     processors:
         - { type: "spec-processor",                  name: "spec1" }
+        - { type: "spec-processor",                  name: "spec2" }
         - { type: "data-accumulator",                name: "acc" }
         - { type: "gain-variation",                  name: "gainvar" }
-        - { type: "spec-processor",                  name: "spec2" }
         - { type: "variable-spectrum-discriminator", name: "discrim" }
         - { type: "basic-root-writer",               name: "brw" }
         - { type: "root-spectrogram-writer",         name: "rsw"}
         - { type: "root-tree-writer",                name: "rtw"}
    
     connections:
-            - signal: "spec1:ps"         # spec file power spectra to accumulator
+              # Take the power spectra from the input file and send them to accumulator
+            - signal: "spec1:ps"         
               slot: "acc:ps"
 
-            - signal: "acc:ps-finished"  # accumulated power spectra to gain variation
+              # Write the accumulated power spectra to ROOT file
+            - signal: "acc:ps-finished"  
+              slot: "brw:ps"
+
+              # Copy the accumulated power spectra to gain variation
+            - signal: "acc:ps-finished"  
               slot: "gainvar:ps-var"
 
-            - signal: "acc:ps-finished"  # accumulated power spectra to ROOT file
-              slot: "brw:ps"
- 
-            - signal: "gainvar:gain-var" # write gain-var histogram to ROOT file
+              # Write the gain-var histogram to ROOT file 
+            - signal: "gainvar:gain-var" 
               slot: "brw:gain-var"
 
+              # Copy the gain-var histogram to the discriminator
             - signal: "gainvar:gain-var"
               slot: "discrim:gv"
 
+              # Take the power spectra from the second input file and write them to a ROOT file
             - signal: "spec2:ps"
               slot: "rsw:ps"
 
+              # Copy the power spectra from the second input file to the discriminator
             - signal: "spec2:ps"
               slot: "discrim:ps-pre"
  
+              # Write the spectrogram of points that are above discrim. threshold to ROOT file 
             - signal: "discrim:disc-1d"
               slot: "rtw:disc-1d"
 
+              # Make sure to send the spec-done signal so the ROOT file gets written
             - signal: "spec2:spec-done"
               slot: "rsw:write-file"
  
@@ -42,15 +51,14 @@ processor-toolbox:
         - spec1
         - spec2
 
-    
+   
 spec1:
-    filename: "../He6_Data/Fake_bootstrap_2020-04-10-15-29-48_000000.spec"
-    spectra: 1600
+    filename: "../He6_Data/Fake_bootstrap_2020-04-10-15-32-55_000001.spec"
+    spectra: 100
     freq-bins: 8192
-    min-freq: 0.0
+    min-freq: 1.0e6
     max-freq: 1.6e9
     header-bytes: 32
-
 
 acc:
     number-to-average: 0
@@ -58,39 +66,37 @@ acc:
 
 gainvar:
     normalize: false
-    min-frequency: 2e6
-    max-frequency: 1598e6
+    min-bin: 100
+    max-bin: 8000
     fit-points: 50
 
-
 spec2:
-    filename: "../He6_Data/Fake_bootstrap_2020-04-10-15-29-48_000001.spec"
-    spectra: 1600
+    filename: "../He6_Data/Fake_bootstrap_2020-04-10-15-32-55_000002.spec"
+    spectra: 100
     freq-bins: 8192
-    min-freq: 0.0
+    min-freq: 1.0e6
     max-freq: 1.6e9
     header-bytes: 32
 
 discrim:
-    min-frequency: 8e6
-    max-frequency: 1592e6
-    snr-threshold-power: 2.0
-
+    min-bin: 100
+    max-bin: 8000
+    sigma-threshold: 0.00
 
 brw:
-    output-file: "../He6_Data/Bootstrap_accum.root"
+    output-file: "../He6_Data/SpecToSparseGramBRW.root"
     file-flag: "recreate"
 
 rsw:
-    output-file: "../He6_Data/Spectrogram.root"
+    output-file: "../He6_Data/SpecToSparseGramRSW.root"
     file-flag: recreate
-    mode: sequential
-    n-time-bins: 1588
+    mode: single
+    n-time-bins: 100
     min-freq: 5.0e6
     max-freq: 1595.0e6
 
 rtw:
-    output-file: "../He6_Data/TracksAndEvents.root"
+    output-file: "../He6_Data/SpecToSparseGramRTW.root"
     file-flag: recreate
 
 
