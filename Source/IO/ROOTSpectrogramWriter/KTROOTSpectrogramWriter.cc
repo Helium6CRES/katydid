@@ -241,16 +241,20 @@ namespace Katydid
 
                 // calculate the properties of the frequency axis
                 double freqBinWidth = data.GetArray(iComponent)->GetAxis().GetBinWidth();
+                KTDEBUG(publog, "Frequency bin width = " << freqBinWidth);
                 const KTAxisProperties< 1 >& axis = data.GetArray(iComponent)->GetAxis();
                 sdIt->fFirstFreqBin = std::max< unsigned >(0, axis.FindBin(fWriter->GetMinFreq()));
                 sdIt->fLastFreqBin = std::min< unsigned >(axis.GetNBins()-1, axis.FindBin(fWriter->GetMaxFreq()));
                 //spectrograms[iComponent].fFirstFreqBin = unsigned((fWriter->GetMinFreq() - data.GetArray(iComponent)->GetAxis().GetBinLowEdge(0)) / freqBinWidth);
                 //spectrograms[iComponent].fLastFreqBin = unsigned((fWriter->GetMaxFreq() - data.GetArray(iComponent)->GetAxis().GetBinLowEdge(0)) / freqBinWidth) + 1;
                 unsigned nFreqBins = sdIt->fLastFreqBin - sdIt->fFirstFreqBin + 1;
+                KTDEBUG(publog, "Frequency bins = " << nFreqBins);
                 //double startFreq = spectrograms[iComponent].fFirstFreqBin * freqBinWidth;
                 //double endFreq = spectrograms[iComponent].fLastFreqBin * freqBinWidth;
                 double startFreq = axis.GetBinLowEdge(sdIt->fFirstFreqBin);
+                KTDEBUG(publog, "Start Frequency = " << startFreq);
                 double endFreq = axis.GetBinLowEdge(sdIt->fLastFreqBin) + freqBinWidth;
+                KTDEBUG(publog, "End frequency = " << endFreq);
                 // form the histogram name
                 stringstream conv;
                 conv << "_" << dataBundle.fHistCount << "_" << iComponent;

@@ -27,8 +27,8 @@ spec:
     header-bytes: 32
 
 acc:
-    number-to-average: 10
-    signal-interval: 10
+    number-to-average: 0
+    signal-interval: 0
 
 writer:
     output-file: "../He6_Data/SimpleSpecDisplay.root"

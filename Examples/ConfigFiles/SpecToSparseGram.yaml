@@ -15,13 +15,13 @@ processor-toolbox:
             - signal: "spec1:ps"         
               slot: "acc:ps"
 
-              # Write the accumulated power spectra to ROOT file
-            - signal: "acc:ps-finished"  
-              slot: "brw:ps"
-
               # Copy the accumulated power spectra to gain variation
             - signal: "acc:ps-finished"  
               slot: "gainvar:ps-var"
+
+              # Write the accumulated power spectra to ROOT file
+            - signal: "acc:ps-finished"  
+              slot: "brw:ps"
 
               # Write the gain-var histogram to ROOT file 
             - signal: "gainvar:gain-var" 

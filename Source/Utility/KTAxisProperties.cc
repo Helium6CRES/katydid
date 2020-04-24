@@ -124,6 +124,14 @@ namespace Katydid
         return;
     }
 
+    void KTAxisProperties< 1 >::SetBinsRange(double min, double max, int bins)
+    {
+        SetRangeMin(min);
+        SetRangeMax(max);
+        fBinWidth = (1.0/ bins) * (fRangeMax - fRangeMin);
+        return;
+    }
+
     double KTAxisProperties< 1 >::GetBinLowEdge(size_t bin) const
     {
         return fRangeMin + fBinWidth * (double)bin;
@@ -153,4 +161,3 @@ namespace Katydid
     }
 
 } /* namespace Katydid */
-

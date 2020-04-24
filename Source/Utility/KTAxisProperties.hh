@@ -16,7 +16,7 @@
 
 namespace Katydid
 {
-    
+
     /*!
      @class KTAxisProperties
      @author N. S. Oblath
@@ -70,6 +70,8 @@ namespace Katydid
 
             void SetRange(size_t dim, double min, double max);
             void SetRange(const double* mins, const double* maxes);
+
+            void SetBinsRange(double min, double max, int bins);
 
         protected:
             const KTNBinsFunctor< NDims >* fGetNBinsFunc;
@@ -330,7 +332,7 @@ namespace Katydid
 
 namespace Katydid
 {
-    
+
     /*!
      @class KTAxisProperties< 1 >
      @author N. S. Oblath
@@ -373,6 +375,7 @@ namespace Katydid
             void SetRangeMin(double min);
             void SetRangeMax(double max);
             void SetRange(double min, double max);
+            void SetBinsRange(double min, double max, int bins);
 
         protected:
             KTNBinsFunctor< 1 >* fGetNBinsFunc;

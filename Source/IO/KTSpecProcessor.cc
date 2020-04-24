@@ -3,7 +3,7 @@
 #include "KTSpecProcessor.hh"
 #include "KTCommandLineOption.hh"
 #include "KTData.hh"
-#include "KTProcSummary.hh"
+#include "KTSliceHeader.hh"
 #include "KTPowerSpectrum.hh"
 #include "KTPowerSpectrumData.hh"
 
@@ -118,25 +118,67 @@ namespace Katydid
                 file.seekg (position, ios::beg); //set read pointer location
                 file.read (memblock, blockSize); //read 1 spectrum of data
 
+                KTSliceHeader& sliceHeader = data->Of< KTSliceHeader >();
+                sliceHeader.SetSliceNumber(i);
+                sliceHeader.SetSliceLength(4.09E-05);
+
                 for (int x = 0; x < fFreqBins; x++)
                 {
                     a =  memblock[x+fPacketHeaderSize];
                     slice[x] = a;
                 }
-                KTINFO(speclog, "Spectrum values  = " << slice[0] << " "
-                << slice[1000] << " " << slice[2000] << " " << slice[3000]
-                << " " << slice[4000] << " " << slice[5000] << " "
-                << slice[6000] << " " << slice[7000] << " " << slice[8000]);
 
                 //initialize an object of type KTPowerSpectrum with all 0
                 //values and 8192 Bins from 0 to 1600 MHz
+
+                unsigned comp = 0;
                 newSpec[0] = new KTPowerSpectrum(slice, fFreqBins, fFreqMin, fFreqMax);
 
                 KTPowerSpectrumData& psData = data->Of< KTPowerSpectrumData >().SetNComponents(1);
-
-                unsigned comp = 0;
-
                 psData.SetSpectrum(newSpec[0], comp);
+                psData.GetArray(comp)->GetAxis().SetBinsRange(0.0, 1.6e9, 8192);
+
+                if (i == 0)
+                {
+                    double min = psData.GetArray(comp)->GetAxis().GetRangeMin();
+                    KTINFO(speclog, "First spectrum min freq = " << min);
+
+                    double max = psData.GetArray(comp)->GetAxis().GetRangeMax();
+                    KTINFO(speclog, "First spectrum max freq = " << max);
+
+                    double width = psData.GetArray(comp)->GetAxis().GetBinWidth();
+                    KTINFO(speclog, "First spectrum bin width = " << width);
+                }
+
+                /*
+                KTSliceHeader& sliceHeader = newData->Of< KTSliceHeader >();
+                sliceHeader = fMasterSliceHeader;
+                sliceHeader.SetIsNewAcquisition(isNewAcquisition);
+                sliceHeader.SetTimeInRun(GetTimeInRun());
+                sliceHeader.SetTimeInAcq(sliceHeader.GetTimeInRun() - fAcqTimeInRun);
+                sliceHeader.SetSliceNumber(fSliceNumber);
+                sliceHeader.SetStartRecordNumber(fReadState.fCurrentRecord);
+                sliceHeader.SetStartSampleNumber(readPos);
+
+                // create the frequency array objects that will contain
+                //the new copies of slices
+                vector< KTRawTimeSeries* > newSlices(nChannels);
+                for (unsigned iChan = 0; iChan < nChannels; ++iChan)
+                {
+                    // nBins = fSliceSize * sampleSize to allow for real and complex samples
+                    newSlices[iChan] = new KTRawTimeSeries(fM3Stream->GetDataTypeSize(),
+                            ConvertMonarch3DataFormat(fM3StreamHeader->GetDataFormat()),
+                            fSliceSize * sampleSize, 0., double(fSliceSize) * sliceHeader.GetBinWidth());
+                    newSlices[iChan]->SetSampleSize(sampleSize);
+
+                    sliceHeader.SetAcquisitionID(fM3Stream->GetAcquisitionId(), iChan);
+                    sliceHeader.SetRecordID(fM3Stream->GetChannelRecord( iChan )->GetRecordId(), iChan);
+                    sliceHeader.SetTimeStamp(fM3Stream->GetChannelRecord( iChan )->GetTime(), iChan);
+                    sliceHeader.SetRawDataFormatType(fHeader.GetChannelHeader( iChan )->GetDataFormat(), iChan);
+                }
+
+               */
+
                 if (i == 0) KTINFO(speclog, "Set first spectrum object");
 
                 if(i == fNSpectra -1)
