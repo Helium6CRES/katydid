@@ -2,6 +2,7 @@
 # Author: N. Oblath
 
 set (DATA_HEADERFILES
+    SpectrumAnalysis/KTLPFData.hh
     SpectrumAnalysis/KTAmplitudeDistribution.hh
     SpectrumAnalysis/KTAnalyticAssociateData.hh
     SpectrumAnalysis/KTChannelAggregatedData.hh
@@ -70,6 +71,7 @@ set (DATA_HEADERFILES
 )
 
 set (DATA_SOURCEFILES
+    SpectrumAnalysis/KTLPFData.cc
     SpectrumAnalysis/KTAmplitudeDistribution.cc
     SpectrumAnalysis/KTAnalyticAssociateData.cc
     SpectrumAnalysis/KTChannelAggregatedData.cc

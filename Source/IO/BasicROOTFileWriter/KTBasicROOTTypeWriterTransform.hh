@@ -35,6 +35,9 @@ namespace Katydid
             // Frequency Spectrum Data
             //************************
         public:
+
+            void WriteFrequencySpectrumDataFFTW_LPF(Nymph::KTDataPtr data); // LPF writer
+            void WriteFrequencySpectrumDataPolar_LPF(Nymph::KTDataPtr data); // LPF writer
             void WriteFrequencySpectrumDataPolar(Nymph::KTDataPtr data);
             void WriteFrequencySpectrumDataFFTW(Nymph::KTDataPtr data);
             void WriteFrequencySpectrumDataPolarPhase(Nymph::KTDataPtr data);
@@ -54,6 +57,8 @@ namespace Katydid
             //********************
             // Power Spectrum Data
             //********************
+            
+            void WritePowerSpectrum_LPF(Nymph::KTDataPtr data); // LPF writer
             void WritePowerSpectrum(Nymph::KTDataPtr data);
             void WritePowerSpectralDensity(Nymph::KTDataPtr data);
 

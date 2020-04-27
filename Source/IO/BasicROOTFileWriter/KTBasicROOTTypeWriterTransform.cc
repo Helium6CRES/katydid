@@ -22,7 +22,8 @@
 #include "KTPowerSpectrumData.hh"
 #include "KTTimeFrequencyDataPolar.hh"
 #include "KTTimeFrequencyPolar.hh"
-
+#include "KTLPFData.hh"
+#include "KTLPF.hh"
 #include "TH1.h"
 #include "TH2.h"
 
@@ -52,6 +53,12 @@ namespace Katydid
 
     void KTBasicROOTTypeWriterTransform::RegisterSlots()
     {
+        // Registering LPF writer slots. Question: Can multiple slots and signals have the 
+        // same name? That seems to be the case here. Look at KTLPF
+        fWriter->RegisterSlot("fs-fftw-lpf", this, &KTBasicROOTTypeWriterTransform::WriteFrequencySpectrumDataFFTW_LPF);
+        fWriter->RegisterSlot("fs-polar-lpf", this, &KTBasicROOTTypeWriterTransform::WriteFrequencySpectrumDataPolar_LPF);
+        fWriter->RegisterSlot("ps-lpf", this, &KTBasicROOTTypeWriterTransform::WritePowerSpectrum_LPF);  
+
         fWriter->RegisterSlot("fs-polar", this, &KTBasicROOTTypeWriterTransform::WriteFrequencySpectrumDataPolar);
         fWriter->RegisterSlot("fs-fftw", this, &KTBasicROOTTypeWriterTransform::WriteFrequencySpectrumDataFFTW);
         fWriter->RegisterSlot("fs-polar-phase", this, &KTBasicROOTTypeWriterTransform::WriteFrequencySpectrumDataPolarPhase);
@@ -83,6 +90,64 @@ namespace Katydid
     // Frequency Spectrum Data
     //************************
 
+
+    void KTBasicROOTTypeWriterTransform::WriteFrequencySpectrumDataFFTW_LPF(Nymph::KTDataPtr data)
+    {
+        if (! data) return;
+
+        uint64_t sliceNumber = data->Of<KTSliceHeader>().GetSliceNumber();
+
+        KTFrequencySpectrumDataFFTW_LPF& fsData = data->Of<KTFrequencySpectrumDataFFTW_LPF>();
+        unsigned nComponents = fsData.GetNComponents();
+
+        if (! fWriter->OpenAndVerifyFile()) return;
+
+        for (unsigned iChannel=0; iChannel<nComponents; iChannel++)
+        {
+            const KTFrequencySpectrumFFTW* spectrum = fsData.GetSpectrumFFTW(iChannel);
+            if (spectrum != NULL)
+            {
+                stringstream conv;
+                conv << "histFSfftw_" << sliceNumber << "_" << iChannel;
+                string histName;
+                conv >> histName;
+                TH1D* powerSpectrum = KT2ROOT::CreateMagnitudeHistogram(spectrum, histName);
+                powerSpectrum->SetDirectory(fWriter->GetFile());
+                powerSpectrum->Write();
+                KTDEBUG(publog, "Histogram <" << histName << "> written to ROOT file");
+            }
+        }
+        return;
+    }    
+
+    void KTBasicROOTTypeWriterTransform::WriteFrequencySpectrumDataPolar_LPF(Nymph::KTDataPtr data)
+    {
+        if (! data) return;
+
+        uint64_t sliceNumber = data->Of<KTSliceHeader>().GetSliceNumber();
+
+        KTFrequencySpectrumDataPolar_LPF& fsData = data->Of<KTFrequencySpectrumDataPolar_LPF>();
+        unsigned nComponents = fsData.GetNComponents();
+
+        if (! fWriter->OpenAndVerifyFile()) return;
+
+        for (unsigned iChannel=0; iChannel<nComponents; iChannel++)
+        {
+            const KTFrequencySpectrumPolar* spectrum = fsData.GetSpectrumPolar(iChannel);
+            if (spectrum != NULL)
+            {
+                stringstream conv;
+                conv << "histFSpolar_" << sliceNumber << "_" << iChannel;
+                string histName;
+                conv >> histName;
+                TH1D* powerSpectrum = KT2ROOT::CreateMagnitudeHistogram(spectrum, histName);
+                powerSpectrum->SetDirectory(fWriter->GetFile());
+                powerSpectrum->Write();
+                KTDEBUG(publog, "Histogram <" << histName << "> written to ROOT file");
+            }
+        }
+        return;
+    }
     void KTBasicROOTTypeWriterTransform::WriteFrequencySpectrumDataPolar(Nymph::KTDataPtr data)
     {
         if (! data) return;
@@ -435,6 +500,35 @@ namespace Katydid
     //********************
     // Power Spectrum Data
     //********************
+    void KTBasicROOTTypeWriterTransform::WritePowerSpectrum_LPF(Nymph::KTDataPtr data)
+    {
+        if (! data) return;
+
+        uint64_t sliceNumber = data->Of<KTSliceHeader>().GetSliceNumber();
+
+        KTPowerSpectrumData_LPF& fsData = data->Of<KTPowerSpectrumData_LPF>();
+        unsigned nComponents = fsData.GetNComponents();
+
+        if (! fWriter->OpenAndVerifyFile()) return;
+
+        for (unsigned iChannel=0; iChannel<nComponents; iChannel++)
+        {
+            KTPowerSpectrum* spectrum = fsData.GetSpectrum(iChannel);
+            if (spectrum != NULL)
+            {
+                spectrum->ConvertToPowerSpectrum();
+                stringstream conv;
+                conv << "histPS_" << sliceNumber << "_" << iChannel;
+                string histName;
+                conv >> histName;
+                TH1D* powerSpectrum = KT2ROOT::CreatePowerHistogram(spectrum, histName);
+                powerSpectrum->SetDirectory(fWriter->GetFile());
+                powerSpectrum->Write();
+                KTDEBUG(publog, "Histogram <" << histName << "> written to ROOT file");
+            }
+        }
+        return;
+    }
     void KTBasicROOTTypeWriterTransform::WritePowerSpectrum(Nymph::KTDataPtr data)
     {
         if (! data) return;

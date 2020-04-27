@@ -30,7 +30,7 @@ namespace Katydid
     KTLowPassFilter::KTLowPassFilter(const std::string& name) :
             KTProcessor(name),
             fRC(0.),
-            fFSPolarSignal("fs-polar", this),
+            fFSPolarSignal("fs-polar", this), // Note that these should reflect the new lpf datatypes
             fFSFFTWSignal("fs-fftw", this),
             fPSSignal("ps", this),
             fFSPolarSlot("fs-polar", this, &KTLowPassFilter::Filter, &fFSPolarSignal),

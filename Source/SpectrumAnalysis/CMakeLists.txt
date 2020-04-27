@@ -2,6 +2,7 @@
 # Author: N. Oblath
 
 set (SPECTRUMANALYSIS_HEADERFILES
+    KTLPF.hh
     KTAggregatedChannelOptimizer.hh
     KTAmplitudeCounter.hh
     KTAmplitudeDistributor.hh
@@ -27,6 +28,7 @@ set (SPECTRUMANALYSIS_HEADERFILES
 )
 
 set (SPECTRUMANALYSIS_SOURCEFILES
+    KTLPF.cc
     KTAggregatedChannelOptimizer.cc
     KTAmplitudeCounter.cc
     KTAmplitudeDistributor.cc
