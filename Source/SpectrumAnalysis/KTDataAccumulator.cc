@@ -529,6 +529,85 @@ namespace Katydid
     }
 
 
+    bool KTDataAccumulator::CoreAddData(KTPowerSpectrumData& data, Accumulator& accDataStruct, KTPowerSpectrumData& accData, KTFrequencySpectrumVarianceDataCore& devData)
+    {
+        double remainingFrac = 1.;
+        //KTDEBUG(avlog, "Accumulating a power spectrum; remainingFrac = " << remainingFrac << "   fAveragingFrac = " << fAveragingFrac);
+
+        if (fAccumulatorSize != 0 && accDataStruct.GetSliceNumber() >= fAccumulatorSize)
+        {
+            remainingFrac -= fAveragingFrac;
+        }
+        //KTDEBUG(avlog, "Slice number = " << accDataStruct.GetSliceNumber() << "  Accumulator size = " << fAccumulatorSize);
+
+        unsigned nComponents = data.GetNComponents();
+
+        //KTDEBUG(avlog, "Power spectrum components = " << nComponents);
+
+        if (accDataStruct.GetSliceNumber() == 0)
+        {
+
+            accData.SetNComponents(nComponents);
+            devData.SetNComponents(nComponents);
+
+            for (unsigned iComponent = 0; iComponent < nComponents; ++iComponent)
+            {
+                KTPowerSpectrum* dataPS = data.GetSpectrum(iComponent);
+
+                KTPowerSpectrum* newPS = new KTPowerSpectrum(dataPS->size(), dataPS->GetRangeMin(), dataPS->GetRangeMax());
+                KTFrequencySpectrumVariance* newVarPS = new KTFrequencySpectrumVariance(dataPS->size(), dataPS->GetRangeMin(), dataPS->GetRangeMax());
+
+                newPS->operator*=(double(0.));
+                newVarPS->operator*=(double(0.));
+
+                accData.SetSpectrum(newPS, iComponent);
+                devData.SetSpectrum(newVarPS, iComponent);
+            }
+        }
+
+        accDataStruct.BumpSliceNumber();
+
+        if (nComponents != accData.GetNComponents())
+        {
+            KTERROR(avlog, "Numbers of components in the average and in the new data do not match");
+            return false;
+        }
+        if (nComponents != devData.GetNComponents())
+        {
+            KTERROR(avlog, "Numbers of components in the variance and in the new data do not match");
+            return false;
+        }
+
+        unsigned arraySize = data.GetSpectrum(0)->size();
+        if (arraySize != accData.GetSpectrum(0)->size())
+        {
+            KTERROR(avlog, "Sizes of arrays in the average and in the new data do not match");
+            return false;
+        }
+        if (arraySize != devData.GetSpectrum(0)->size())
+        {
+            KTERROR(avlog, "Sizes of arrays in the variance and in the new data do not match");
+            return false;
+        }
+
+        for (unsigned iComponent = 0; iComponent < nComponents; ++iComponent)
+        {
+            KTPowerSpectrum* newSpect = data.GetSpectrum(iComponent);
+            KTPowerSpectrum* avSpect = accData.GetSpectrum(iComponent);
+            KTFrequencySpectrumVariance* varSpect = devData.GetSpectrum(iComponent);
+            avSpect->SetMode(newSpect->GetMode());
+            double avCache = 0.;
+            for (unsigned iBin = 0; iBin < arraySize; ++iBin)
+            {
+                avCache = (*avSpect)(iBin);
+                (*avSpect)(iBin) = avCache * remainingFrac + (*newSpect)(iBin) * fAveragingFrac;
+                (*varSpect)(iBin) = (*varSpect)(iBin) * remainingFrac + (*newSpect)(iBin) * (*newSpect)(iBin) * fAveragingFrac;
+            }
+        }
+
+        return true;
+    }
+
     bool KTDataAccumulator::AccumulatorType< KTTimeSeriesData >::Finalize()
     {
         double scale = fAccumulatorSize == 0 ? 1. / (double)(fSliceHeader.GetSliceNumber()) : 1.;
@@ -600,6 +679,7 @@ namespace Katydid
     bool KTDataAccumulator::AccumulatorType< KTPowerSpectrumData >::Finalize()
     {
         double scale = fAccumulatorSize == 0 ? 1. / (double)(fSliceHeader.GetSliceNumber()) : 1.;
+        KTDEBUG(avlog, "Slice length = " << fSliceHeader.GetSliceLength());
         KTDEBUG(avlog, "Scaling power spect by " << scale);
         unsigned nComponents = fDataType.GetNComponents();
         for (unsigned iComponent = 0; iComponent < nComponents; ++iComponent)

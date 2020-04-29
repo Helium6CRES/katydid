@@ -4,19 +4,27 @@ processor-toolbox:
         name: spec
       - type: data-accumulator
         name: acc
+      - type: basic-root-writer
+        name: brw
       - type: root-spectrogram-writer
-        name: writer    
+        name: rsw    
 
     connections:
       - signal: "spec:ps"
         slot: "acc:ps"
       - signal: "acc:ps-finished"  
-        slot: "writer:ps"
+        slot: "brw:ps"
+      - signal: "spec:ps"
+        slot: "rsw:ps"
       - signal: "spec:spec-done"  
-        slot: "writer:write-file"
+        slot: "rsw:write-file"
 
     run-queue:
       - spec
+
+brw:
+    output-file: "SimpleSpecDisplayBRW.root"
+    file-flag: recreate
 
 spec:
     filename: "../He6_Data/Fake_bootstrap_2020-04-10-15-32-55_000001.spec"
@@ -30,10 +38,12 @@ acc:
     number-to-average: 0
     signal-interval: 0
 
-writer:
-    output-file: "../He6_Data/SimpleSpecDisplay.root"
+rsw:
+    output-file: "../He6_Data/SimpleSpecDisplayRSW.root"
     file-flag: recreate
-    mode: sequential
-    n-time-bins: 96
+    mode: single
     min-freq: 5.0e6
     max-freq: 1595.0e6
+    n-time-bins: 96
+    min-time: 0.0
+    max-time: 3.92e-3

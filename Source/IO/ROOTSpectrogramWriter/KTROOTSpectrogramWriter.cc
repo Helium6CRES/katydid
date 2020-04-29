@@ -229,7 +229,6 @@ namespace Katydid
                 }
 
                 dataBundle.fTimeAxisMax = dataBundle.fTimeAxisMin + sliceLength * (double)dataBundle.fNTimeBins;
-                KTDEBUG(publog, dataBundle.fNTimeBins << "  " << dataBundle.fTimeAxisMin << "  " << dataBundle.fTimeAxisMax);
 
             } // end if currentSize == 0
 
@@ -260,7 +259,14 @@ namespace Katydid
                 conv << "_" << dataBundle.fHistCount << "_" << iComponent;
                 string histName = dataBundle.fHistNameBase + conv.str();
                 KTINFO(publog, "Creating histogram called <" << histName << ">");
-                KTDEBUG(publog, "Creating new spectrogram histogram for component " << iComponent << ": " << histName << ", " << dataBundle.fNTimeBins << ", " << dataBundle.fTimeAxisMin << ", " << dataBundle.fTimeAxisMax << ", " << nFreqBins << ", " << startFreq << ", " << endFreq);
+                KTDEBUG(publog, "Creating new spectrogram histogram for component " << iComponent << ": " << histName);
+                KTDEBUG(publog, "Time bins = " << dataBundle.fNTimeBins);
+                KTDEBUG(publog, "Time axis min = " << dataBundle.fTimeAxisMin);
+                KTDEBUG(publog, "Time axis max = " << dataBundle.fTimeAxisMax);
+                KTDEBUG(publog, "Frequency bins = " << nFreqBins);
+                KTDEBUG(publog, "Frequency min = " << startFreq);
+                KTDEBUG(publog, "Frequency max = " << endFreq);
+
                 sdIt->fSpectrogram = new TH2D(histName.c_str(), "Spectrogram", dataBundle.fNTimeBins, dataBundle.fTimeAxisMin, dataBundle.fTimeAxisMax, nFreqBins, startFreq, endFreq );
                 sdIt->fSpectrogram->SetXTitle("Time (s)");
                 sdIt->fSpectrogram->SetYTitle(axis.GetAxisLabel().c_str());

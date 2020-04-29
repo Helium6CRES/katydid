@@ -217,7 +217,9 @@ namespace Katydid
         KTDEBUG(publog_rsw, "Adding power-spectrum-type data");
         KTSliceHeader& sliceHeader = data->Of< KTSliceHeader >();
         double timeInRun = sliceHeader.GetTimeInRun();
+        KTDEBUG(publog_rsw, "Time in run = " << timeInRun);
         double sliceLength = sliceHeader.GetSliceLength();
+        KTDEBUG(publog_rsw, "Slice length = " << sliceLength);
         bool isNewAcq = sliceHeader.GetIsNewAcquisition();
         // Check if this is a slice we should care about.
         // The first slice of interest will contain the writer's min time;
