@@ -27,9 +27,9 @@ namespace Katydid
             fNSpectra(0),
             fFreqMin(0.),
             fFreqMax(1.6E09),
-            fHeaderPtr(new Nymph::KTData()),
-            fHeader(fHeaderPtr->Of< KTEggHeader >()),
-            fMasterSliceHeader(),
+            //fHeaderPtr(new Nymph::KTData()),
+            //fHeader(fHeaderPtr->Of< KTEggHeader >()),
+            //fMasterSliceHeader(),
             fDataSignal("ps", this),
             fSpecDoneSignal("spec-done", this)
     {
@@ -147,8 +147,8 @@ namespace Katydid
                 KTINFO(speclog, "Slice length = " << sliceHeader.GetSliceLength());
 
                 newSpec[0] = new KTPowerSpectrum(slice, fFreqBins, fFreqMin, fFreqMax);
-                KTPowerSpectrumData& spectrum = data->Of< KTPowerSpectrumData >().SetNComponents(1);
-                spectrum.SetSpectrum(newSpec[0], comp);
+                KTPowerSpectrumData& psData = data->Of< KTPowerSpectrumData >().SetNComponents(1);
+                psData.SetSpectrum(newSpec[0], comp);
                 psData.GetArray(comp)->GetAxis().SetBinsRange(0.0, 1.6e9, 8192);
 
                 if (i == 0)

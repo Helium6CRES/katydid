@@ -53,8 +53,8 @@ processor-toolbox:
 
    
 spec1:
-    filename: "../He6_Data/Fake_bootstrap_2020-04-10-15-32-55_000001.spec"
-    spectra: 500
+    filename: "../He6_Data/Fake_bootstrap_2020-04-10-15-32-55_000009.spec"
+    spectra: 1600
     freq-bins: 8192
     min-freq: 1.0e6
     max-freq: 1.6e9
@@ -68,11 +68,11 @@ gainvar:
     normalize: false
     min-bin: 100
     max-bin: 8000
-    fit-points: 50
+    fit-points: 100
 
 spec2:
-    filename: "../He6_Data/Fake_bootstrap_2020-04-10-15-32-55_000002.spec"
-    spectra: 500
+    filename: "../He6_Data/Fake_bootstrap_2020-04-10-15-32-55_000009.spec"
+    spectra: 1600
     freq-bins: 8192
     min-freq: 1.0e6
     max-freq: 1.6e9
@@ -81,7 +81,7 @@ spec2:
 discrim:
     min-bin: 100
     max-bin: 8000
-    sigma-threshold: 2.5
+    sigma-threshold: 4.5
 
 brw:
     output-file: "../He6_Data/SpecToSparseGramBRW.root"
@@ -91,7 +91,7 @@ rsw:
     output-file: "../He6_Data/SpecToSparseGramRSW.root"
     file-flag: recreate
     mode: single
-    n-time-bins: 500
+    n-time-bins: 1600
     min-freq: 5.0e6
     max-freq: 1595.0e6
 

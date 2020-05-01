@@ -214,7 +214,6 @@ namespace Katydid
             bool CoreAddData(KTFrequencySpectrumDataFFTWCore& data, Accumulator& accDataStruct, KTFrequencySpectrumDataFFTWCore& accData, KTFrequencySpectrumVarianceDataCore& devData);
 
             bool CoreAddData(KTPowerSpectrumDataCore& data, Accumulator& accDataStruct, KTPowerSpectrumDataCore& accData, KTFrequencySpectrumVarianceDataCore& devData);
-
             bool CoreAddData(KTPowerSpectrumData& data, Accumulator& accDataStruct, KTPowerSpectrumData& accData, KTFrequencySpectrumVarianceDataCore& devData);
 
 
