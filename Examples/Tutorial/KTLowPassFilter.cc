@@ -54,10 +54,10 @@ namespace Katydid
 
     bool KTLowPassFilter::Filter(KTFrequencySpectrumDataPolar& fsData)
     {
-        unsigned nComponents = fsData.GetNComponents();
+        unsigned nComponents = fsData.GetNComponents(); 
         KTLowPassFilteredFSDataPolar& newData = fsData.Of< KTLowPassFilteredFSDataPolar >().SetNComponents(nComponents);
 
-        for (unsigned iComponent=0; iComponent<nComponents; ++iComponent)
+        for (unsigned iComponent=0; iComponent<nComponents; ++iComponent) 
         {
             KTFrequencySpectrumPolar* newSpectrum = Filter(fsData.GetSpectrumPolar(iComponent));
             if (newSpectrum == NULL)

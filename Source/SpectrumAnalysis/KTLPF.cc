@@ -33,7 +33,7 @@ namespace Katydid
     // Constructor
     KTLPF::KTLPF(const std::string& name) :   // name is declared in the header
             KTProcessor(name),
-            fTimeConst(0.),
+            fTimeConst(2.0e-8),  // RC time constant for the LPF initialized to 0. 
 
             //Signals Why are we naming these the same? And not matching them to 
             // the name of the output data type: "lpf-fs-fftw" and such? Is this to be able to use 
@@ -58,7 +58,7 @@ namespace Katydid
     {
 
     }
-
+    //Comments on the Methods to follow is in a seperate document that will be attached to the tutorial. 
     bool KTLPF::Configure(const scarab::param_node* node)
     // I don't really get what this does: How does it relate to the macro MEMBERVARIABLE 
     // in the header file?
@@ -98,12 +98,11 @@ namespace Katydid
     bool KTLPF::Filter(KTFrequencySpectrumDataFFTW& fsData)
     {
         unsigned nComponents = fsData.GetNComponents();
-        KTFrequencySpectrumDataFFTW_LPF& newData = fsData.Of< KTFrequencySpectrumDataFFTW_LPF >().SetNComponents(nComponents); // Creates a new data object of type LPF
-        // that is set to the same number of components as fsData. But note that component means channel effectively here not frequency bin. 
+        KTFrequencySpectrumDataFFTW_LPF& newData = fsData.Of< KTFrequencySpectrumDataFFTW_LPF >().SetNComponents(nComponents); 
 
         for (unsigned iComponent=0; iComponent<nComponents; ++iComponent)
         {
-            KTFrequencySpectrumFFTW* newSpectrum = Filter(fsData.GetSpectrumFFTW(iComponent)); // You need to have this Filter function defined below. why of the same name? 
+            KTFrequencySpectrumFFTW* newSpectrum = Filter(fsData.GetSpectrumFFTW(iComponent)); 
             if (newSpectrum == NULL)
             {
                 KTERROR(gclog, "Low-pass filter of spectrum " << iComponent << " failed for some reason. Continuing processing.");

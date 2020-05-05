@@ -1,0 +1,40 @@
+processor-toolbox:
+    processors:
+      - type: egg-processor
+        name: egg
+      - type: forward-fftw
+        name: fft
+      - type: lp-filter
+        name: lpf        
+      - type: basic-root-writer
+        name: brw
+
+    connections:
+      - signal: "egg:header"
+        slot: "fft:header"
+      - signal: "egg:ts"
+        slot: "fft:ts-fftw"
+      - signal: "fft:fft"
+        slot: "lpf:fs-fftw"
+      - signal: "lpf:fs-fftw-lpf"  
+        slot: "brw:fs-fftw-lpf"
+
+    run-queue:
+      - egg
+
+egg:
+    filename: "../inputs/eggfiles/Noah2.egg"
+    egg-reader: egg3
+    slice-size: 4096
+    number-of-slices: 1
+
+fft:
+    transform-flag: ESTIMATE
+
+lp-filter:
+    TimeConst: 2.0e-8 #This should be a cut at 50 MHz. 
+    # Actually it looks like the 2pi is built in. 
+
+brw:
+    output-file: "../outputs/rootfiles/LPFTEST.root"
+    file-flag: recreate

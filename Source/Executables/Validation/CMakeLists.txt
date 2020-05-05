@@ -63,6 +63,7 @@ if (Katydid_ENABLE_TESTING)
     )
     
     set( PROGRAMS
+        TestLPF
         Test2DDiscrim
         TestChannelAggregator
         TestConsensusThresholding
