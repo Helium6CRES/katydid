@@ -26,7 +26,8 @@ namespace Katydid
             fFreqBins(8192),
             fNSpectra(0),
             fFreqMin(0.),
-            fFreqMax(1.6E09),
+            fFreqMax(1600000000),
+            fSpectraAvg(8),
             //fHeaderPtr(new Nymph::KTData()),
             //fHeader(fHeaderPtr->Of< KTEggHeader >()),
             //fMasterSliceHeader(),
@@ -63,11 +64,11 @@ namespace Katydid
                 }
             }
             fNSpectra = node->get_value< unsigned >("spectra", fNSpectra);
-            fFreqBins = node->get_value< double >("freq-bins", fFreqBins);
-            fFreqMin = node->get_value< unsigned >("min-freq", fFreqMin);
-            fFreqMax = node->get_value< unsigned >("max-freq", fFreqMax);
             fPacketHeaderSize = node->get_value< unsigned >("header-bytes", fPacketHeaderSize);
-
+            fSpectraAvg = node->get_value< unsigned >("ROACH-spect-avg", fSpectraAvg);
+            fFreqBins = node->get_value< unsigned >("freq-bins", fFreqBins);
+            fFreqMin = node->get_value< double >("min-freq", fFreqMin);
+            fFreqMax = node->get_value< double >("max-freq", fFreqMax);
         }
 
         // Command-line settings
@@ -141,10 +142,41 @@ namespace Katydid
                 Nymph::KTDataPtr data(new Nymph::KTData());
 
                 KTSliceHeader& sliceHeader = data->Of< KTSliceHeader >().SetNComponents(1);
-                sliceHeader.SetTimeInRun(1.0);
+
                 sliceHeader.SetSliceNumber(i);
-                sliceHeader.SetSliceLength(4.09e-05);
-                KTINFO(speclog, "Slice length = " << sliceHeader.GetSliceLength());
+
+                //slice size in bytes = # of bins (given 8-bit resolution)
+                sliceHeader.SetRawSliceSize(fFreqBins);
+
+                //no diff between 'raw' slice size, slice size
+                sliceHeader.SetSliceSize(fFreqBins);
+
+                //Nyquist frequency is 1/2 sampling rate
+                sliceHeader.SetSampleRate(2*fFreqMax);
+                KTINFO(speclog, "Frequency max = " << fFreqMax);
+
+                //slice length is 2x # of bins / 2x Nyquist freq, times averaged spectra
+                sliceHeader.SetSliceLength(fFreqBins*fSpectraAvg/fFreqMax);
+
+                //bin width = bandwidth/bins
+                sliceHeader.SetBinWidth(fFreqMax/fFreqBins);
+
+                //assume for now that all runs start at time t=0
+                sliceHeader.SetTimeInRun(i*fFreqBins*fSpectraAvg/fFreqMax);
+
+                //assume for now that there is 1 acq per run, all runs start at t=0
+                sliceHeader.SetTimeInAcq(i*fFreqBins*fSpectraAvg/fFreqMax);
+
+                sliceHeader.SetStartRecordNumber(0);
+
+                sliceHeader.SetStartSampleNumber(0);
+
+                sliceHeader.SetEndRecordNumber(0);
+
+                sliceHeader.SetEndSampleNumber(0);
+
+                sliceHeader.SetRecordSize(0);
+
 
                 newSpec[0] = new KTPowerSpectrum(slice, fFreqBins, fFreqMin, fFreqMax);
                 KTPowerSpectrumData& psData = data->Of< KTPowerSpectrumData >().SetNComponents(1);

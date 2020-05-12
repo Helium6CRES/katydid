@@ -290,7 +290,8 @@ namespace Katydid
         KTDEBUG(stflog, "Initial slope is: " << fInitialSlope);
 
         unsigned nComponents = 1;
-        fFreqBinWidth = (double) slHeader.GetSampleRate() / (double) slHeader.GetRawSliceSize();
+        fFreqBinWidth = (double) slHeader.GetBinWidth();
+        //fFreqBinWidth = (double) slHeader.GetSampleRate() / (double) slHeader.GetRawSliceSize();
         KTDEBUG(stflog, "Frequency bin width " << fFreqBinWidth);
 
         if (fCalculateMinBin)
@@ -632,7 +633,7 @@ namespace Katydid
                 // if point was not picked up
                 if (match == false)
                 {
-                    //KTWARN(stflog, "Starting new line");
+                    KTWARN(stflog, "Starting new line");
 
                     KTSequentialLineData newLine;
                     newLine.SetSlope( fInitialSlope );

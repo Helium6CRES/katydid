@@ -13,8 +13,8 @@ processor-toolbox:
       - spec
 
 spec:
-    filename: "../He6_Data/Fake_bootstrap_2020-04-10-15-32-55_000001.spec"
-    spectra: 100
+    filename: "../He6_Data/Fake_bootstrap_2020-05-06-10-44-57_000006.spec"
+    spectra: 1600
     freq-bins: 8192
     min-freq: 0.0
     max-freq: 1.6e9

@@ -29,7 +29,7 @@ pbuilder_prepare_project()
 set_option( USE_CPP11 TRUE )
 
 option (Katydid_ENABLE_PROFILING "Build the profiling tests" OFF)
-option (Katydid_ENABLE_TESTING "Build the validation tests and enable CMake testing" OFF)
+option (Katydid_ENABLE_TESTING "Build the validation tests and enable CMake testing" ON)
 option (Katydid_ENABLE_TUTORIAL "Build the tutorial code" OFF)
 option (Katydid_USE_MONARCH "Flag to optionally use Monarch" ON)
 option (Katydid_USE_PYTHON "Flag to optionally build python bindings" OFF)

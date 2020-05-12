@@ -59,7 +59,8 @@ namespace Katydid
         private:
             int fNSpectra;
             int fPacketHeaderSize;
-            size_t fFreqBins;
+            int fSpectraAvg;
+            int fFreqBins;
             double fFreqMin;
             double fFreqMax;
 
