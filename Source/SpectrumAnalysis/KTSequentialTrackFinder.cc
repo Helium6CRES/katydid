@@ -456,7 +456,7 @@ namespace Katydid
                 // loop over active lines, in order of earliest start time
                 // dont need to sort them because they are already sorted by the slice of the line's start point
 
-                //KTDEBUG(stflog, "Currently there are N active Lines "<<fActiveLines.size());
+                KTDEBUG(stflog, "Number of currently active lines = "<< fActiveLines.size());
 
                 std::vector< KTSequentialLineData >::iterator lineIt = fActiveLines.begin();
                 while( lineIt != fActiveLines.end())
@@ -607,7 +607,7 @@ namespace Katydid
                         // if point matches this line: insert
                         if (timeCondition and anyPointCondition)
                         {
-                            KTDEBUG(stflog, "Matching conditions fulfilled");
+                            KTDEBUG(stflog, "Matching conditions fulfilled, line has " << lineIt->GetNPoints() << " points");
                             lineIt->AddPoint(*pointIt);
                             (this->*fCalcSlope)(*lineIt);
                             match = true;

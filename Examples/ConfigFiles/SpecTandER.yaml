@@ -6,7 +6,7 @@ processor-toolbox:
         - { type: "data-accumulator",                name: "acc" }
         - { type: "gain-variation",                  name: "gainvar" }
         - { type: "variable-spectrum-discriminator", name: "discrim" }
-        - { type: "sequential-track-finder",         name: "seq-tr-clust"}
+        - { type: "sequential-track-finder",         name: "seq-tr-find"}
         - { type: "track-proc-ws",                   name: "tr-proc-ws"}
         - { type: "basic-root-writer",               name: "brw" }
         - { type: "root-spectrogram-writer",         name: "rsw"}
@@ -47,10 +47,14 @@ processor-toolbox:
 
               # Pass sparse spectrogram to clustering algorithm for event ID
             - signal: "discrim:disc-1d"
-              slot: "seq-tr-clust:disc-1d"
+              slot: "seq-tr-find:disc-1d"
+
+              # Send signal to clustering algorithm at end of input to check remaining clusters
+            - signal: "spec2:spec-done"
+              slot: "seq-tr-find:done"
 
               # Output sequential event candidates
-            - signal: "seq-tr-clust:seq-cand"
+            - signal: "seq-tr-find:seq-cand"
               slot: "tr-proc-ws:seq-cand"
 
               # Write processed tracks to a ROOT tree
@@ -67,8 +71,8 @@ processor-toolbox:
 
    
 spec1:
-    filename: "../He6_Data/Fake_bootstrap_2020-05-06-10-44-57_000006.spec"
-    spectra: 300
+    filename: "../He6_Data/Freq_data_2020-12-15-17-20-07_000000.spec"
+    spectra: 500
     ROACH-spect-avg: 8
     freq-bins: 8192
     min-freq: 1.0e6
@@ -86,9 +90,9 @@ gainvar:
     fit-points: 100
 
 spec2:
-    filename: "../He6_Data/Fake_bootstrap_2020-05-06-10-44-57_000006.spec"
-    spectra: 300
-    ROACH-spect-avg: 8
+    filename: "../He6_Data/Freq_data_2020-12-15-17-20-07_000000.spec"
+    spectra: 500
+    ROACH-sapect-avg: 8
     freq-bins: 8192
     min-freq: 1.0e6
     max-freq: 1600.0e6
@@ -97,34 +101,38 @@ spec2:
 discrim:
     min-bin: 100
     max-bin: 8000
-    sigma-threshold: 4.5
+    sigma-threshold: 5.0
 
 brw:
-    output-file: "../He6_Data/SpecToSparseGramBRW.root"
+    output-file: "../He6_Data/Freq_data_2020-12-15-17-20-07_000000_BRW.root"
     file-flag: "recreate"
 
 rsw:
-    output-file: "../He6_Data/SpecToSparseGramRSW.root"
+    output-file: "../He6_Data/Freq_data_2020-12-15-17-20-07_000000_RSW.root"
     file-flag: recreate
     mode: single
-    n-time-bins: 300
+    n-time-bins: 500
     min-freq: 5.0e6
     max-freq: 1595.0e6
 
-seq-tr-clust:
+seq-tr-find:
     min-frequency: 5.0e6 # minimum frequency (in Hz)
-    max-frequency: 1550.0e6 # maximum frequency (in Hz)
+    max-frequency: 1595.0e6 # maximum frequency (in Hz)
     initial-slope : 6.0e9 # slope of a track with 1 point
     slope-method: weighted-first-point-ref # method to update line slope after point collection
     n-slope-points: 10 # max points to include in the slope calculation
-    time-gap-tolerance: 2.0e-3 #max gap between points in a line (in sec.)
-    frequency-acceptance: 600.0e3 #max freq gap between point and extrapolated line (in Hz)
-    trimming-threshold: 4.5  # snr threshold for the first and last point of a candidate
-    min-points: 3 # line is converted to a track iff it has collected more than this # of points
+    time-gap-tolerance: 2.0e-4 # max gap between points in a line (in sec.)
+    frequency-acceptance: 600.0e3 # max freq gap between point and extrapolated line (in Hz)
+    trimming-threshold: 0.5  # snr threshold for the first and last point of a candidate
+    min-points: 2 # line is converted to a track iff it has >= this # of points
     min-slope: 0 # line is converted to a track iff line slope is > than this (in Hz/s)
 
+tr-proc-ws:
+    min-slope: 1.0e7 # min slope (Hz/s)
+    min-points: 2 # min points required to keep a processed track
+
 rtw:
-    output-file: "../He6_Data/SpecToSparseGramRTW.root"
+    output-file: "../He6_Data/Freq_data_2020-12-15-17-20-07_000000_RTW.root"
     file-flag: recreate
 
 

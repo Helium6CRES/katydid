@@ -103,7 +103,7 @@ namespace Katydid
         // open the file and load its contents into memblock
         KTINFO(speclog, "Opening spec file <" << fFilenames[0] << ">");
         streampos size;
-        char * memblock;
+        unsigned char * memblock;
         //ifstream file ("/home/brent/Desktop/SpecFiles/Freq_data_2020-03-25-17-36-18_000000.spec", ios::in|ios::binary|ios::ate);
 
         std::ifstream file(fFilenames[0].c_str(), ios::in|ios::binary|ios::ate);
@@ -111,7 +111,8 @@ namespace Katydid
         if (file.is_open())
         {
             KTINFO(speclog, "Spec file <" << fFilenames[0] << "> opened");
-            uint a; //spectra must be treated as unsigned 8-bit values (0-255)
+            unsigned char a;
+            //uint a; //spectra must be treated as unsigned 8-bit values (0-255)
             int slice[fFreqBins]; //holder array for spectrum data
             int position = 0; //variable for read position start
             int blockSize = fPacketHeaderSize+fFreqBins; //add header length
