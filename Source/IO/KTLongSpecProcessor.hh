@@ -43,7 +43,7 @@ namespace Katydid
     class KTLongSpecProcessor : public Nymph::KTPrimaryProcessor
     {
         public:
-            KTLongSpecProcessor(const std::string& name = "spec-processor");
+            KTLongSpecProcessor(const std::string& name = "long-spec-processor");
             virtual ~KTLongSpecProcessor();
 
             bool Configure(const scarab::param_node* node);
@@ -58,6 +58,7 @@ namespace Katydid
 
         private:
             int fNSpectra;
+            int fPacketsPerSpectrum;
             int fPacketHeaderSize;
             int fSpectraAvg;
             int fFreqBins;

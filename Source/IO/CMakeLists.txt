@@ -14,7 +14,6 @@ set (IO_HEADERFILES
     TerminalWriter/KTTerminalWriter.hh
     KTDPTReader.hh
     KTSpecReader.hh
-    KTSpecProcessor.hh
     KTLongSpecProcessor.hh
     #KTMultiFileJSONReader.hh
 )
@@ -32,7 +31,6 @@ set (IO_SOURCEFILES
     TerminalWriter/KTTerminalWriter.cc
     KTDPTReader.cc
     KTSpecReader.cc
-    KTSpecProcessor.cc
     KTLongSpecProcessor.cc
     #KTMultiFileJSONReader.cc
 )

@@ -1,7 +1,7 @@
 processor-toolbox:
 
     processors:
-        - { type: "spec-processor",                  name: "spec" }
+        - { type: "long-spec-processor",             name: "spec" }
         - { type: "basic-root-writer",               name: "brw" }
 
     connections:
@@ -15,8 +15,8 @@ processor-toolbox:
 spec:
     filename: "../He6_Data/Freq_data_2021-03-08-16-49-13_000000.spec"
     spectra: 1
-    ROACH-spect-avg: 8
-    freq-bins: 8192
+    ROACH-spect-avg: 2
+    freq-bins: 32768
     min-freq: 1.0e6
     max-freq: 1200.0e6
     header-bytes: 32
