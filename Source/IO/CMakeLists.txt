@@ -15,6 +15,7 @@ set (IO_HEADERFILES
     KTDPTReader.hh
     KTSpecReader.hh
     KTSpecProcessor.hh
+    KTLongSpecProcessor.hh
     #KTMultiFileJSONReader.hh
 )
 
@@ -32,6 +33,7 @@ set (IO_SOURCEFILES
     KTDPTReader.cc
     KTSpecReader.cc
     KTSpecProcessor.cc
+    KTLongSpecProcessor.cc
     #KTMultiFileJSONReader.cc
 )
 
@@ -40,7 +42,7 @@ if (ROOT_FOUND)
         DataDisplay/KTDisplayWindow.hh
         Conversions/KTROOTData.hh
     )
-    
+
     set (IO_HEADERFILES
         ${IO_HEADERFILES}
         ${IO_DICT_HEADERFILES}
@@ -118,7 +120,7 @@ if (HDF5_FOUND)
         HDF5Writer/KTHDF5TypeWriterSpectrumAnalysis.hh
         HDF5Writer/KTHDF5Writer.hh
     )
-    
+
     set (IO_SOURCEFILES
         ${IO_SOURCEFILES}
         HDF5Writer/KTHDF5TypeWriterTransform.cc
@@ -160,4 +162,3 @@ target_link_libraries (KatydidIO ${KATYDID_LIBS} ${EXTERNAL_LIBRARIES})
 
 pbuilder_install_headers (${IO_HEADERFILES})
 pbuilder_install_libraries (KatydidIO)
-
