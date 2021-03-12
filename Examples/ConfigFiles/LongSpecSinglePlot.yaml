@@ -13,16 +13,18 @@ processor-toolbox:
         - spec
 
 spec:
-    filename: "../He6_Data/Freq_data_2021-03-08-16-49-13_000000.spec"
-    spectra: 1
+    filename: "../He6_Data/Freq_data_2021-03-12-13-04-25_000000.spec"
+    spectra: 25
+    packets-per-spec: 4
+    header-bytes: 32
     ROACH-spect-avg: 2
-    freq-bins: 32768
+    freq-bins-per-packet: 8192
     min-freq: 1.0e6
     max-freq: 1200.0e6
-    header-bytes: 32
+
 
 brw:
-    output-file: "../He6_Data/Freq_data_2021-03-08-16-49-13_000000.root"
+    output-file: "../He6_Data/Freq_data_2021-03-12-13-04-25_000000.root"
     file-flag: "recreate"
 
 

@@ -61,7 +61,7 @@ namespace Katydid
             int fPacketsPerSpectrum;
             int fPacketHeaderSize;
             int fSpectraAvg;
-            int fFreqBins;
+            int fFreqBinsPerPkt;
             double fFreqMin;
             double fFreqMax;
 
