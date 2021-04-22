@@ -162,8 +162,36 @@ namespace Katydid
 
             char specFlagA, specFlagB, specFlagC, specFlagD;
 
+            bool packetDrop =  false;
+
             for(int i = 0; i < fNSpectra; i++) //loop over # of spectra to be read
             {
+                unsigned comp = 0;
+
+                //initialize an object of type KTPowerSpectrum with all 0values
+                Nymph::KTDataPtr data(new Nymph::KTData());
+
+                KTSliceHeader& sliceHeader = data->Of< KTSliceHeader >().SetNComponents(1);
+
+                sliceHeader.SetSliceNumber(i);
+
+                //slice size in bytes = # of bins (given 8-bit resolution)
+                sliceHeader.SetRawSliceSize(fFreqBinsPerPkt*fPacketsPerSpectrum);
+
+                //no diff between 'raw' slice size, slice size
+                sliceHeader.SetSliceSize(fFreqBinsPerPkt*fPacketsPerSpectrum);
+
+                //Nyquist frequency is 1/2 sampling rate
+                sliceHeader.SetSampleRate(2*fFreqMax);
+
+                //slice length is 2x # of bins / 2x Nyquist freq, times averaged spectra
+                sliceHeader.SetSliceLength(fFreqBinsPerPkt*fPacketsPerSpectrum*fSpectraAvg/fFreqMax);
+
+                //bin width = bandwidth/bins
+                sliceHeader.SetBinWidth(fFreqMax/(fFreqBinsPerPkt*fPacketsPerSpectrum));
+
+                if (i == 0) sliceHeader.SetIsNewAcquisition(1);
+
                 position = packetOffset + 822400 + i*(blockSize);
                 file.seekg (position, ios::beg); //set read pointer location
                 file.read (memblock, blockSize); //read 1 spectrum of data
@@ -177,6 +205,7 @@ namespace Katydid
                 || bitset<8>(specFlagC) != 192 || bitset<8>(specFlagD) != 224)
                 {
                   KTINFO(speclog, "WARNING: Packet dropped from spectrum # " << i << "!!");
+                  packetDrop = true;
                   i--;
                   if(bitset<8>(specFlagD) == 128) packetOffset += 3*(fPacketHeaderSize+fFreqBinsPerPkt);
                   else if(bitset<8>(specFlagC) == 128) packetOffset += 2*(fPacketHeaderSize+fFreqBinsPerPkt);
@@ -188,84 +217,66 @@ namespace Katydid
                 else
                 {
                   KTINFO(speclog, "Processing spectrum # " << i);
+                  if (packetDrop == true)
+                  {
+                    sliceHeader.SetIsNewAcquisition(1);
+                    KTINFO(speclog, "Set New Acquisition!");
+                  }
+                  else sliceHeader.SetIsNewAcquisition(0);
+
+                  packetDrop = false; //reset packetDrop flag for next spectrum
 
                   for(int j = 0; j < fPacketsPerSpectrum; j++)
                   {
-                      for (int k = 0; k < fFreqBinsPerPkt; k++)
-                      {
-                          a =  memblock[j*(fPacketHeaderSize+fFreqBinsPerPkt)+fPacketHeaderSize+k];
-                          slice[j*fFreqBinsPerPkt + k] = a;
-                      }
+                    for (int k = 0; k < fFreqBinsPerPkt; k++)
+                    {
+                      a =  memblock[j*(fPacketHeaderSize+fFreqBinsPerPkt)+fPacketHeaderSize+k];
+                      slice[j*fFreqBinsPerPkt + k] = a;
+                    }
                   }
 
-                  unsigned comp = 0;
+                //assume for now that all runs start at time t=0
+                sliceHeader.SetTimeInRun(i*fFreqBinsPerPkt*fPacketsPerSpectrum*fSpectraAvg/fFreqMax);
 
-                  //initialize an object of type KTPowerSpectrum with all 0values
-                  Nymph::KTDataPtr data(new Nymph::KTData());
+                //assume for now that there is 1 acq per run, all runs start at t=0
+                sliceHeader.SetTimeInAcq(i*fFreqBinsPerPkt*fPacketsPerSpectrum*fSpectraAvg/fFreqMax);
 
-                  KTSliceHeader& sliceHeader = data->Of< KTSliceHeader >().SetNComponents(1);
+                sliceHeader.SetStartRecordNumber(0);
 
-                  sliceHeader.SetSliceNumber(i);
+                sliceHeader.SetStartSampleNumber(0);
 
-                  //slice size in bytes = # of bins (given 8-bit resolution)
-                  sliceHeader.SetRawSliceSize(fFreqBinsPerPkt);
+                sliceHeader.SetEndRecordNumber(0);
 
-                  //no diff between 'raw' slice size, slice size
-                  sliceHeader.SetSliceSize(fFreqBinsPerPkt);
+                sliceHeader.SetEndSampleNumber(0);
 
-                  //Nyquist frequency is 1/2 sampling rate
-                  sliceHeader.SetSampleRate(2*fFreqMax);
-                  KTINFO(speclog, "Frequency max = " << fFreqMax);
-
-                  //slice length is 2x # of bins / 2x Nyquist freq, times averaged spectra
-                  sliceHeader.SetSliceLength(fFreqBinsPerPkt*fSpectraAvg/fFreqMax);
-
-                  //bin width = bandwidth/bins
-                  sliceHeader.SetBinWidth(fFreqMax/fFreqBinsPerPkt);
-
-                  //assume for now that all runs start at time t=0
-                  sliceHeader.SetTimeInRun(i*fFreqBinsPerPkt*fSpectraAvg/fFreqMax);
-
-                  //assume for now that there is 1 acq per run, all runs start at t=0
-                  sliceHeader.SetTimeInAcq(i*fFreqBinsPerPkt*fSpectraAvg/fFreqMax);
-
-                  sliceHeader.SetStartRecordNumber(0);
-
-                  sliceHeader.SetStartSampleNumber(0);
-
-                  sliceHeader.SetEndRecordNumber(0);
-
-                  sliceHeader.SetEndSampleNumber(0);
-
-                  sliceHeader.SetRecordSize(0);
+                sliceHeader.SetRecordSize(0);
 
 
-                  newSpec[0] = new KTPowerSpectrum(slice, fPacketsPerSpectrum*fFreqBinsPerPkt, fFreqMin, fFreqMax);
-                  KTPowerSpectrumData& psData = data->Of< KTPowerSpectrumData >().SetNComponents(1);
-                  psData.SetSpectrum(newSpec[0], comp);
-                  psData.GetArray(comp)->GetAxis().SetBinsRange(fFreqMin, fFreqMax, fPacketsPerSpectrum*fFreqBinsPerPkt);
+                newSpec[0] = new KTPowerSpectrum(slice, fPacketsPerSpectrum*fFreqBinsPerPkt, fFreqMin, fFreqMax);
+                KTPowerSpectrumData& psData = data->Of< KTPowerSpectrumData >().SetNComponents(1);
+                psData.SetSpectrum(newSpec[0], comp);
+                psData.GetArray(comp)->GetAxis().SetBinsRange(fFreqMin, fFreqMax, fPacketsPerSpectrum*fFreqBinsPerPkt);
 
+                double min = psData.GetArray(comp)->GetAxis().GetRangeMin();
+                KTINFO(speclog, "Spectrum min freq = " << min);
 
-                  double min = psData.GetArray(comp)->GetAxis().GetRangeMin();
-                  KTINFO(speclog, "Spectrum min freq = " << min);
+                double max = psData.GetArray(comp)->GetAxis().GetRangeMax();
+                KTINFO(speclog, "Spectrum max freq = " << max);
 
-                  double max = psData.GetArray(comp)->GetAxis().GetRangeMax();
-                  KTINFO(speclog, "Spectrum max freq = " << max);
+                double width = psData.GetArray(comp)->GetAxis().GetBinWidth();
+                KTINFO(speclog, "Spectrum bin width = " << width);
 
-                  double width = psData.GetArray(comp)->GetAxis().GetBinWidth();
-                  KTINFO(speclog, "Spectrum bin width = " << width);
+                KTINFO(speclog, "Set spectrum object");
 
-                  KTINFO(speclog, "Set spectrum object");
-
-                  if(i == fNSpectra -1)
-                  {
-                      data->Of< Nymph::KTData >().SetLastData(true);
-                      KTINFO(speclog, "fLastData set to TRUE");
-                  }
-
-                  fDataSignal(data);
-                  KTINFO(speclog, "Spectrum data signal output");
+                if(i == fNSpectra -1)
+                {
+                    data->Of< Nymph::KTData >().SetLastData(true);
+                    KTINFO(speclog, "fLastData set to TRUE");
                 }
+
+                fDataSignal(data);
+                KTINFO(speclog, "Spectrum data signal output");
+              }
 
             }
             fSpecDoneSignal();

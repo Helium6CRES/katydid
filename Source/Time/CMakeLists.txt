@@ -35,7 +35,7 @@ if (Katydid_USE_MONARCH)
         )
     endif( Monarch_BUILD_MONARCH3 )
     #KTEggWriter.hh
-    
+
     if( Monarch_BUILD_MONARCH2 )
         set (TIME_SOURCEFILES
             ${TIME_SOURCEFILES}

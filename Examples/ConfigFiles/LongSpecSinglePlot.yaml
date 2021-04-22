@@ -13,8 +13,8 @@ processor-toolbox:
         - spec
 
 spec:
-    filename: "../He6_Data/Freq_data_2021-03-12-13-04-25_000000.spec"
-    spectra: 25
+    filename: "../He6_Data/fileout.spec"
+    spectra: 100
     packets-per-spec: 4
     header-bytes: 32
     ROACH-spect-avg: 2
