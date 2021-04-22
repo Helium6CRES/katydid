@@ -12,18 +12,18 @@ if( Katydid_ENABLE_EXECUTABLES )
         Katydid
         Truncate
     )
-    
-    if (Katydid_USE_MONARCH)
-        set( programs ${programs}
-            EggScanner
-        )
-    endif (Katydid_USE_MONARCH)
-    
-    if (Katydid_USE_MATLAB AND Monarch_BUILD_MONARCH3)
-         set( programs ${programs}
-            RSAMatToEgg
-        )
-    endif (Katydid_USE_MATLAB AND Monarch_BUILD_MONARCH3)
+
+    #if (Katydid_USE_MONARCH)
+    #    set( programs ${programs}
+    #        EggScanner
+    #    )
+    #endif (Katydid_USE_MONARCH)
+
+    #if (Katydid_USE_MATLAB AND Monarch_BUILD_MONARCH3)
+    #     set( programs ${programs}
+    #        RSAMatToEgg
+    #    )
+    #endif (Katydid_USE_MATLAB AND Monarch_BUILD_MONARCH3)
 
     pbuilder_executables( programs all_libs )
 

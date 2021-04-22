@@ -30,7 +30,7 @@ namespace monarch3
 
 namespace Katydid
 {
-    
+
     class KTEggHeader;
 
     // NOTE: the first version of this KTEgg3Reader operates in much the same way as KTEgg2Reader, and does not take advantage of

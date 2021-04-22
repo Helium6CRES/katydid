@@ -31,12 +31,12 @@ set_option( USE_CPP11 TRUE )
 option (Katydid_ENABLE_PROFILING "Build the profiling tests" OFF)
 option (Katydid_ENABLE_TESTING "Build the validation tests and enable CMake testing" ON)
 option (Katydid_ENABLE_TUTORIAL "Build the tutorial code" OFF)
-option (Katydid_USE_MONARCH "Flag to optionally use Monarch" ON)
+option (Katydid_USE_MONARCH "Flag to optionally use Monarch" OFF)
 option (Katydid_USE_PYTHON "Flag to optionally build python bindings" OFF)
 option (Katydid_USE_MATLAB "Flag to optionally use MatIO libraries, needed to read MAT files" ON)
 option (Katydid_USE_FFTW "Flag to optionally use FFTW" ON)
 option (Katydid_USE_ROOT "Flag to optionally use ROOT" ON)
-option (Katydid_USE_HDF5 "Flag to optionally use HDF5" ON)
+option (Katydid_USE_HDF5 "Flag to optionally use HDF5" OFF)
 option (Katydid_USE_MAGICKPP "Flag to optionally use GraphicsMagick and the Magick++ API" OFF)
 option (Katydid_USE_MANTIS "Flag to optionally use Mantis (external dependency)" OFF)
 option (Katydid_USE_EIGEN "Flag to optionally use eigen" OFF)
@@ -128,19 +128,19 @@ endif (FFTW_FOUND)
 include_directories (${FFTW_INCLUDE_DIR})
 
 # HDF5
-if (Katydid_USE_HDF5)
-    find_package (HDF5 COMPONENTS CXX)
-else (Katydid_USE_HDF5)
-    set (HDF5_FOUND FALSE)
-endif (Katydid_USE_HDF5)
-if (HDF5_FOUND)
-    #add_definitions (-DHDF5_FOUND)
-    include_directories (BEFORE ${HDF5_INCLUDE_DIR})
-    pbuilder_add_ext_libraries (${HDF5_CXX_LIBRARIES})
-else (HDF5_FOUND)
-    #remove_definitions (-DHDF5_FOUND)
-    message (STATUS "Building without HDF5")
-endif (HDF5_FOUND)
+#if (Katydid_USE_HDF5)
+#    find_package (HDF5 COMPONENTS CXX)
+#else (Katydid_USE_HDF5)
+#    set (HDF5_FOUND FALSE)
+#endif (Katydid_USE_HDF5)
+#if (HDF5_FOUND)
+#    #add_definitions (-DHDF5_FOUND)
+#    include_directories (BEFORE ${HDF5_INCLUDE_DIR})
+#    pbuilder_add_ext_libraries (${HDF5_CXX_LIBRARIES})
+#else (HDF5_FOUND)
+#    #remove_definitions (-DHDF5_FOUND)
+#    message (STATUS "Building without HDF5")
+#endif (HDF5_FOUND)
 
 # ROOT
 if (Katydid_USE_ROOT)
@@ -240,32 +240,32 @@ else (Katydid_ENABLE_TUTORIAL)
 endif (Katydid_ENABLE_TUTORIAL)
 
 # Monarch
-if (Katydid_USE_MONARCH)
-    pbuilder_add_submodule( Monarch Source/Time/Monarch )
-    add_definitions (-DUSE_MONARCH)
-    if (Monarch_BUILD_MONARCH2)
-        add_definitions(-DUSE_MONARCH2)
-    else (Monarch_BUILD_MONARCH2)
-        remove_definitions(-DUSE_MONARCH2)
-    endif (Monarch_BUILD_MONARCH2)
-    if (Monarch_BUILD_MONARCH3 )
-        add_definitions(-DUSE_MONARCH3)
-    else (Monarch_BUILD_MONARCH3)
-        remove_definitions(-DUSE_MONARCH3)
-    endif (Monarch_BUILD_MONARCH3)
-    # we need the definitions for HAS_ATTR_IFC and HAS_GRP_IFC from Monarch to use the proper class interfaces in M3Header and M3Stream
-    set_property( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} APPEND PROPERTY COMPILE_DEFINITIONS ${Monarch_COMPILE_DEFINITIONS} )
-    message(STATUS "Monarch compile definitions: ${Monarch_COMPILE_DEFINITIONS}")
-else (Katydid_USE_MONARCH)
-    message(STATUS "Building without Monarch")
-    add_subdirectory (Source/Time/Monarch EXCLUDE_FROM_ALL)
-    remove_definitions (-DUSE_MONARCH)
-    remove_definitions (-DUSE_MONARCH2)
-    remove_definitions (-DUSE_MONARCH3)
-endif (Katydid_USE_MONARCH)
+#if (Katydid_USE_MONARCH)
+#    pbuilder_add_submodule( Monarch Source/Time/Monarch )
+#    add_definitions (-DUSE_MONARCH)
+#    if (Monarch_BUILD_MONARCH2)
+#        add_definitions(-DUSE_MONARCH2)
+#    else (Monarch_BUILD_MONARCH2)
+#        remove_definitions(-DUSE_MONARCH2)
+#    endif (Monarch_BUILD_MONARCH2)
+#    if (Monarch_BUILD_MONARCH3 )
+#        add_definitions(-DUSE_MONARCH3)
+#    else (Monarch_BUILD_MONARCH3)
+#        remove_definitions(-DUSE_MONARCH3)
+#    endif (Monarch_BUILD_MONARCH3)
+#    # we need the definitions for HAS_ATTR_IFC and HAS_GRP_IFC from Monarch to use the proper class interfaces in M3Header and M3Stream
+#    set_property( DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} APPEND PROPERTY COMPILE_DEFINITIONS ${Monarch_COMPILE_DEFINITIONS} )
+#    message(STATUS "Monarch compile definitions: ${Monarch_COMPILE_DEFINITIONS}")
+#else (Katydid_USE_MONARCH)
+#    message(STATUS "Building without Monarch")
+#    add_subdirectory (Source/Time/Monarch EXCLUDE_FROM_ALL)
+#    remove_definitions (-DUSE_MONARCH)
+#    remove_definitions (-DUSE_MONARCH2)
+#    remove_definitions (-DUSE_MONARCH3)
+#endif (Katydid_USE_MONARCH)
 
 # Subdirectories
-include_directories (BEFORE 
+include_directories (BEFORE
     ${PROJECT_SOURCE_DIR}/Source/Utility
     ${PROJECT_SOURCE_DIR}/Source/Data
     ${PROJECT_SOURCE_DIR}/Source/Data/SpectrumAnalysis
@@ -285,7 +285,7 @@ include_directories (BEFORE
     ${PROJECT_SOURCE_DIR}/Source/IO/ROOTSpectrogramWriter
     ${PROJECT_SOURCE_DIR}/Source/IO/ROOTTreeWriter
     ${PROJECT_SOURCE_DIR}/Source/IO/TerminalWriter
-    ${PROJECT_SOURCE_DIR}/Source/Time
+    #${PROJECT_SOURCE_DIR}/Source/Time
     #${PROJECT_SOURCE_DIR}/Source/Simulation
     ${PROJECT_SOURCE_DIR}/Source/Evaluation
     ${PROJECT_SOURCE_DIR}/Source/Transform
@@ -297,7 +297,7 @@ include_directories (BEFORE
 add_subdirectory (Source/Utility)
 add_subdirectory (Source/Data)
 add_subdirectory (Source/IO)
-add_subdirectory (Source/Time)
+#add_subdirectory (Source/Time)
 #add_subdirectory (Source/Simulation)
 #add_subdirectory (Source/Evaluation)
 add_subdirectory (Source/Transform)
