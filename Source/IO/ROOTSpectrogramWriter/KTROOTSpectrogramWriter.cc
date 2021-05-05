@@ -169,7 +169,7 @@ namespace Katydid
 
         KTROOTSpectrogramWriter::Mode mode = fWriter->GetMode();
 
-        KTDEBUG(publog, "checking new acq");
+/*        KTDEBUG(publog, "checking new acq");
         if (isNewAcq && dataBundle.fSpectrograms.size() != 0)
         {
             dataBundle.fHistCount += 1;
@@ -194,6 +194,7 @@ namespace Katydid
                 }
             }
         }
+*/
 
         KTDEBUG(publog, "checking if we need to increase spectrogram vec size");
         // resize the dataBundle vector if necessary and initialize the new spectrogram pointers
