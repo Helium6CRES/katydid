@@ -58,12 +58,14 @@ namespace Katydid
 
         private:
             int fNSpectra;
-            int fPacketsPerSpectrum;
-            int fPacketHeaderSize;
-            int fSpectraAvg;
-            int fFreqBinsPerPkt;
-            double fFreqMin;
-            double fFreqMax;
+            int fPacketsPerSpectrum;  //the number of packets needed for the ROACH to output a complete spectrum
+            int fPacketHeaderSize;    //the size of a DAQ packet header, in bytes
+            int fFreqBinsPerPkt;      //the number of frequency bins in each UDP packet writtten to *.spec
+            int fROACH_FFT_Avg;       //the number of sequential FFTs averaged on the DAQ before output to *.spec
+            int fSpecTimeAvg;         //the number of sequential spectra from *.spec to average with this processor
+            int fSpecFreqAvg;         //the number of freq bins to average (for improving SNR with nonzero df/dt)
+            double fFreqMin;          //the minimum DAQ frequency
+            double fFreqMax;          //the DAQ Nyquist frequency
 
             Nymph::KTSignalData fDataSignal;
             Nymph::KTSignalOneArg< void > fSpecDoneSignal;

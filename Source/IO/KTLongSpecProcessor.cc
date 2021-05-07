@@ -24,15 +24,14 @@ namespace Katydid
             KTPrimaryProcessor(name),
             fProgressReportInterval(1),
             fFilenames(),
-            fFreqBinsPerPkt(8192),
-            fNSpectra(0),
-            fPacketsPerSpectrum(4),
-            fFreqMin(0.),
-            fFreqMax(1200000000),
-            fSpectraAvg(2),
-            //fHeaderPtr(new Nymph::KTData()),
-            //fHeader(fHeaderPtr->Of< KTEggHeader >()),
-            //fMasterSliceHeader(),
+            fNSpectra(0),           //the number of spectra we wish to process with the current katydid run
+            fFreqBinsPerPkt(8192),  //the number of frequency bins in each UDP packet writtten to *.spec
+            fPacketsPerSpectrum(4), //the number of packets needed for the ROACH to output a complete spectrum
+            fFreqMin(0.),           //the minimum DAQ frequency
+            fFreqMax(1200000000),   //the DAQ Nyquist frequency
+            fROACH_FFT_Avg(2),      //the number of sequential FFTs averaged on the DAQ before output to *.spec
+            fSpecTimeAvg(1),        //the number of sequential spectra from *.spec to average with this processor
+            fSpecFreqAvg(2),        //the number of freq bins to average (for improving SNR with nonzero df/dt)
             fDataSignal("ps", this),
             fSpecDoneSignal("spec-done", this)
     {
@@ -70,11 +69,13 @@ namespace Katydid
             fPacketsPerSpectrum = node->get_value< unsigned >("packets-per-spec", fPacketsPerSpectrum);
             KTINFO(speclog, "Packets per spectrum = " << fPacketsPerSpectrum);
             fPacketHeaderSize = node->get_value< unsigned >("header-bytes", fPacketHeaderSize);
-            fSpectraAvg = node->get_value< unsigned >("ROACH-spect-avg", fSpectraAvg);
+            fROACH_FFT_Avg = node->get_value< unsigned >("ROACH-spect-avg", fROACH_FFT_Avg);
             fFreqBinsPerPkt = node->get_value< unsigned >("freq-bins-per-packet", fFreqBinsPerPkt);
             fFreqMin = node->get_value< double >("min-freq", fFreqMin);
             fFreqMax = node->get_value< double >("max-freq", fFreqMax);
             KTINFO(speclog, "Maximum frequency = " << fFreqMax);
+            fSpecTimeAvg = node->get_value< double >("time-slice-avg", fSpecTimeAvg);
+            fSpecFreqAvg = node->get_value< double >("freq-bin-avg", fSpecFreqAvg);
 
         }
 
@@ -92,15 +93,7 @@ namespace Katydid
 
     bool KTLongSpecProcessor::ProcessSpec()
     {
-/*
-    fMasterSliceHeader.SetSampleRate(fHeader.GetAcquisitionRate());
-    fMasterSliceHeader.SetRawSliceSize(fSliceSize);
-    fMasterSliceHeader.SetSliceSize(fSliceSize);
-    fMasterSliceHeader.CalculateBinWidthAndSliceLength();
-    fMasterSliceHeader.SetNonOverlapFrac((double)fStride / (double)fSliceSize);
-    fMasterSliceHeader.SetRecordSize(fHeader.GetChannelHeader(0)->GetRecordSize());
 
-      return fHeaderPtr; */
         if (fFilenames.size() == 0)
         {
             KTERROR(speclog, "No files have been specified");
@@ -120,8 +113,8 @@ namespace Katydid
             KTINFO(speclog, "Spec file <" << fFilenames[0] << "> opened");
             unsigned char a;
             //uint a; //spectra must be treated as unsigned 8-bit values (0-255)
-            int slice[fPacketsPerSpectrum*fFreqBinsPerPkt]; //holder array for spectrum data
-            KTINFO(speclog, "Spectrum length = " << fPacketsPerSpectrum*fFreqBinsPerPkt);
+            int slice[fPacketsPerSpectrum*fFreqBinsPerPkt/fSpecFreqAvg]; //holder array for spectrum data
+            KTINFO(speclog, "Spectrum length = " << fPacketsPerSpectrum*fFreqBinsPerPkt/fSpecFreqAvg);
             int position = 0; //variable for read position start
             int blockSize = fPacketsPerSpectrum*(fPacketHeaderSize+fFreqBinsPerPkt); //total bytes
             KTINFO(speclog, "Block size = " << fPacketsPerSpectrum*(fPacketHeaderSize+fFreqBinsPerPkt));
@@ -164,11 +157,11 @@ namespace Katydid
 
             bool packetDrop =  false;
 
-            for(int i = 0; i < fNSpectra; i++) //loop over # of spectra to be read
+            for(int i = 0; i < fNSpectra; i++) //loop over # of spectra to be output
             {
                 unsigned comp = 0;
 
-                //initialize an object of type KTPowerSpectrum with all 0values
+                //initialize an object of type KTPowerSpectrum with all 0 values
                 Nymph::KTDataPtr data(new Nymph::KTData());
 
                 KTSliceHeader& sliceHeader = data->Of< KTSliceHeader >().SetNComponents(1);
@@ -176,25 +169,25 @@ namespace Katydid
                 sliceHeader.SetSliceNumber(i);
 
                 //slice size in bytes = # of bins (given 8-bit resolution)
-                sliceHeader.SetRawSliceSize(fFreqBinsPerPkt*fPacketsPerSpectrum);
+                sliceHeader.SetRawSliceSize(fFreqBinsPerPkt*fPacketsPerSpectrum/fSpecFreqAvg);
 
                 //no diff between 'raw' slice size, slice size
-                sliceHeader.SetSliceSize(fFreqBinsPerPkt*fPacketsPerSpectrum);
+                sliceHeader.SetSliceSize(fFreqBinsPerPkt*fPacketsPerSpectrum/fSpecFreqAvg);
 
-                //Nyquist frequency is 1/2 sampling rate
+                //Nyquist frequency fFreqMax is 1/2 sampling rate
                 sliceHeader.SetSampleRate(2*fFreqMax);
 
-                //slice length is 2x # of bins / 2x Nyquist freq, times averaged spectra
-                sliceHeader.SetSliceLength(fFreqBinsPerPkt*fPacketsPerSpectrum*fSpectraAvg/fFreqMax);
+                //slice length (in sec) is 2x # of bins / 2x Nyquist freq, times averaged spectra
+                sliceHeader.SetSliceLength(fFreqBinsPerPkt*fPacketsPerSpectrum/fFreqMax);
 
                 //bin width = bandwidth/bins
-                sliceHeader.SetBinWidth(fFreqMax/(fFreqBinsPerPkt*fPacketsPerSpectrum));
+                sliceHeader.SetBinWidth(fFreqMax*fSpecFreqAvg/(fFreqBinsPerPkt*fPacketsPerSpectrum));
 
                 if (i == 0) sliceHeader.SetIsNewAcquisition(1);
 
-                position = packetOffset + 822400 + i*(blockSize);
+                position = packetOffset + i*(blockSize);
                 file.seekg (position, ios::beg); //set read pointer location
-                file.read (memblock, blockSize); //read 1 spectrum of data
+                file.read (memblock, blockSize); //read 1 ROACH spectrum of data
 
                 specFlagA = memblock[24];
                 specFlagB = memblock[8248];
@@ -211,7 +204,6 @@ namespace Katydid
                   else if(bitset<8>(specFlagC) == 128) packetOffset += 2*(fPacketHeaderSize+fFreqBinsPerPkt);
                   else if(bitset<8>(specFlagB) == 128) packetOffset += 1*(fPacketHeaderSize+fFreqBinsPerPkt);
                   else i++;
-                  KTINFO(speclog, "Packet Offset = " << packetOffset);
                 }
 
                 else
@@ -228,18 +220,22 @@ namespace Katydid
 
                   for(int j = 0; j < fPacketsPerSpectrum; j++)
                   {
-                    for (int k = 0; k < fFreqBinsPerPkt; k++)
+                    for (int k = 0; k < fFreqBinsPerPkt/fSpecFreqAvg; k++)
                     {
-                      a =  memblock[j*(fPacketHeaderSize+fFreqBinsPerPkt)+fPacketHeaderSize+k];
-                      slice[j*fFreqBinsPerPkt + k] = a;
+                      slice[j*fFreqBinsPerPkt/fSpecFreqAvg + k] = 0.0;
+                      for (int m = 0; m <fSpecFreqAvg; m++)
+                      {
+                        a =  memblock[j*(fPacketHeaderSize+fFreqBinsPerPkt)+fPacketHeaderSize+k*fSpecFreqAvg + m];
+                        slice[j*fFreqBinsPerPkt/fSpecFreqAvg + k] += a/fSpecFreqAvg;
+                      }
                     }
                   }
 
                 //assume for now that all runs start at time t=0
-                sliceHeader.SetTimeInRun(i*fFreqBinsPerPkt*fPacketsPerSpectrum*fSpectraAvg/fFreqMax);
+                sliceHeader.SetTimeInRun(i*fFreqBinsPerPkt*fPacketsPerSpectrum*fROACH_FFT_Avg/fFreqMax);
 
                 //assume for now that there is 1 acq per run, all runs start at t=0
-                sliceHeader.SetTimeInAcq(i*fFreqBinsPerPkt*fPacketsPerSpectrum*fSpectraAvg/fFreqMax);
+                sliceHeader.SetTimeInAcq(i*fFreqBinsPerPkt*fPacketsPerSpectrum*fROACH_FFT_Avg/fFreqMax);
 
                 sliceHeader.SetStartRecordNumber(0);
 
@@ -251,11 +247,10 @@ namespace Katydid
 
                 sliceHeader.SetRecordSize(0);
 
-
-                newSpec[0] = new KTPowerSpectrum(slice, fPacketsPerSpectrum*fFreqBinsPerPkt, fFreqMin, fFreqMax);
+                newSpec[0] = new KTPowerSpectrum(slice, fPacketsPerSpectrum*fFreqBinsPerPkt/fSpecFreqAvg, fFreqMin, fFreqMax);
                 KTPowerSpectrumData& psData = data->Of< KTPowerSpectrumData >().SetNComponents(1);
                 psData.SetSpectrum(newSpec[0], comp);
-                psData.GetArray(comp)->GetAxis().SetBinsRange(fFreqMin, fFreqMax, fPacketsPerSpectrum*fFreqBinsPerPkt);
+                psData.GetArray(comp)->GetAxis().SetBinsRange(fFreqMin, fFreqMax, fPacketsPerSpectrum*fFreqBinsPerPkt/fSpecFreqAvg);
 
                 double min = psData.GetArray(comp)->GetAxis().GetRangeMin();
                 KTINFO(speclog, "Spectrum min freq = " << min);

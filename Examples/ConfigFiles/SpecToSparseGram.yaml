@@ -90,10 +90,10 @@ brw:
 rsw:
     output-file: "../He6_Data/SpecToSparseGramRSW.root"
     file-flag: recreate
-    mode: single
+    mode: sequential
     n-time-bins: 1600
-    min-freq: 5.0e6
-    max-freq: 1595.0e6
+    min-freq: 0.0e6
+    max-freq: 1200.0e6
 
 rtw:
     output-file: "../He6_Data/SpecToSparseGramRTW.root"
