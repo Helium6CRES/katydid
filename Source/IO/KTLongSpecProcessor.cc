@@ -100,11 +100,10 @@ namespace Katydid
             return false;
         }
 
-        // open the file and load its contents into memblock
+        // open the file and declare a pointer to memory block
         KTINFO(speclog, "Opening spec file <" << fFilenames[0] << ">");
         streampos size;
         unsigned char * memblock;
-        //ifstream file ("/home/brent/Desktop/SpecFiles/Freq_data_2020-03-25-17-36-18_000000.spec", ios::in|ios::binary|ios::ate);
 
         std::ifstream file(fFilenames[0].c_str(), ios::in|ios::binary|ios::ate);
 
@@ -116,8 +115,8 @@ namespace Katydid
             int slice[fPacketsPerSpectrum*fFreqBinsPerPkt/fSpecFreqAvg]; //holder array for spectrum data
             KTINFO(speclog, "Spectrum length = " << fPacketsPerSpectrum*fFreqBinsPerPkt/fSpecFreqAvg);
             int position = 0; //variable for read position start
-            int blockSize = fPacketsPerSpectrum*(fPacketHeaderSize+fFreqBinsPerPkt); //total bytes
-            KTINFO(speclog, "Block size = " << fPacketsPerSpectrum*(fPacketHeaderSize+fFreqBinsPerPkt));
+            int blockSize = fPacketsPerSpectrum*fSpecTimeAvg*(fPacketHeaderSize+fFreqBinsPerPkt); //total bytes
+            KTINFO(speclog, "Block size = " << fPacketsPerSpectrum*fSpecTimeAvg*(fPacketHeaderSize+fFreqBinsPerPkt));
 
             char memblock [blockSize]; //declare array of 1-byte chars to read from binary file
             char headerblock [fPacketHeaderSize]; //declare array to read header of 1st packet in file
@@ -177,8 +176,10 @@ namespace Katydid
                 //Nyquist frequency fFreqMax is 1/2 sampling rate
                 sliceHeader.SetSampleRate(2*fFreqMax);
 
+                KTINFO(speclog, "Spectrum time averaging parameter = " << fSpecTimeAvg);
                 //slice length (in sec) is 2x # of bins / 2x Nyquist freq, times averaged spectra
-                sliceHeader.SetSliceLength(fFreqBinsPerPkt*fPacketsPerSpectrum/fFreqMax);
+                sliceHeader.SetSliceLength(fFreqBinsPerPkt*fPacketsPerSpectrum*fROACH_FFT_Avg*fSpecTimeAvg/fFreqMax);
+                KTINFO(speclog, "Setting slice time length to " << fFreqBinsPerPkt*fPacketsPerSpectrum*fROACH_FFT_Avg*fSpecTimeAvg/fFreqMax);
 
                 //bin width = bandwidth/bins
                 sliceHeader.SetBinWidth(fFreqMax*fSpecFreqAvg/(fFreqBinsPerPkt*fPacketsPerSpectrum));
@@ -187,7 +188,7 @@ namespace Katydid
 
                 position = packetOffset + i*(blockSize);
                 file.seekg (position, ios::beg); //set read pointer location
-                file.read (memblock, blockSize); //read 1 ROACH spectrum of data
+                file.read (memblock, blockSize); //read 1 time-averaged spectrum of data
 
                 specFlagA = memblock[24];
                 specFlagB = memblock[8248];
@@ -217,25 +218,30 @@ namespace Katydid
                   else sliceHeader.SetIsNewAcquisition(0);
 
                   packetDrop = false; //reset packetDrop flag for next spectrum
-
-                  for(int j = 0; j < fPacketsPerSpectrum; j++)
+                  for(int n = 0; n < fSpecTimeAvg; n++)
                   {
-                    for (int k = 0; k < fFreqBinsPerPkt/fSpecFreqAvg; k++)
+                    for(int j = 0; j < fPacketsPerSpectrum; j++)
                     {
-                      slice[j*fFreqBinsPerPkt/fSpecFreqAvg + k] = 0.0;
-                      for (int m = 0; m <fSpecFreqAvg; m++)
+                      for (int k = 0; k < fFreqBinsPerPkt/fSpecFreqAvg; k++)
                       {
-                        a =  memblock[j*(fPacketHeaderSize+fFreqBinsPerPkt)+fPacketHeaderSize+k*fSpecFreqAvg + m];
-                        slice[j*fFreqBinsPerPkt/fSpecFreqAvg + k] += a/fSpecFreqAvg;
+                        if (n==0) slice[j*fFreqBinsPerPkt/fSpecFreqAvg + k] = 0.0;
+                        for (int m = 0; m <fSpecFreqAvg; m++)
+                        {
+                          //n skips over whole spectra, j skips over packets + headers, k skips over averaged freq bins
+                          a =  memblock[n*fPacketsPerSpectrum*(fPacketHeaderSize+fFreqBinsPerPkt)
+                                        + j*(fPacketHeaderSize+fFreqBinsPerPkt)+fPacketHeaderSize
+                                        + k*fSpecFreqAvg + m];
+                          slice[j*fFreqBinsPerPkt/fSpecFreqAvg + k] += a;
+                        }
                       }
                     }
                   }
 
                 //assume for now that all runs start at time t=0
-                sliceHeader.SetTimeInRun(i*fFreqBinsPerPkt*fPacketsPerSpectrum*fROACH_FFT_Avg/fFreqMax);
+                sliceHeader.SetTimeInRun(i*fFreqBinsPerPkt*fPacketsPerSpectrum*fROACH_FFT_Avg*fSpecTimeAvg/fFreqMax);
 
                 //assume for now that there is 1 acq per run, all runs start at t=0
-                sliceHeader.SetTimeInAcq(i*fFreqBinsPerPkt*fPacketsPerSpectrum*fROACH_FFT_Avg/fFreqMax);
+                sliceHeader.SetTimeInAcq(i*fFreqBinsPerPkt*fPacketsPerSpectrum*fROACH_FFT_Avg*fSpecTimeAvg/fFreqMax);
 
                 sliceHeader.SetStartRecordNumber(0);
 

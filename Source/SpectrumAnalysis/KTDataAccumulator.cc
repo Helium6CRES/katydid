@@ -532,17 +532,17 @@ namespace Katydid
     bool KTDataAccumulator::CoreAddData(KTPowerSpectrumData& data, Accumulator& accDataStruct, KTPowerSpectrumData& accData, KTFrequencySpectrumVarianceDataCore& devData)
     {
         double remainingFrac = 1.;
-        //KTDEBUG(avlog, "Accumulating a power spectrum; remainingFrac = " << remainingFrac << "   fAveragingFrac = " << fAveragingFrac);
+        KTDEBUG(avlog, "Accumulating a power spectrum; remainingFrac = " << remainingFrac << "   fAveragingFrac = " << fAveragingFrac);
 
         if (fAccumulatorSize != 0 && accDataStruct.GetSliceNumber() >= fAccumulatorSize)
         {
             remainingFrac -= fAveragingFrac;
         }
-        //KTDEBUG(avlog, "Slice number = " << accDataStruct.GetSliceNumber() << "  Accumulator size = " << fAccumulatorSize);
+        KTDEBUG(avlog, "Slice number = " << accDataStruct.GetSliceNumber() << "  Accumulator size = " << fAccumulatorSize);
 
         unsigned nComponents = data.GetNComponents();
 
-        //KTDEBUG(avlog, "Power spectrum components = " << nComponents);
+        KTDEBUG(avlog, "Power spectrum components = " << nComponents);
 
         if (accDataStruct.GetSliceNumber() == 0)
         {
