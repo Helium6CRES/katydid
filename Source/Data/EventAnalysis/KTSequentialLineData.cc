@@ -143,4 +143,3 @@ namespace Katydid
         }
     }
 } /* namespace Katydid */
-
