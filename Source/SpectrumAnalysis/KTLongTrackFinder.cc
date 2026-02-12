@@ -1,9 +1,17 @@
-/*
- * KTLongTrackFinder.cc
+/**
+ * @file KTLongTrackFinder.cc
+ * @brief KTLongTrackFinder processor
+ * @details Finds and creates track from discriminator data
+ *  Builds track candidates slice-by slice by trying to add over-threshold points to active tracks.
+ *  When track is found to end, it is emitted as a new Data Pointer of type KTLongTrackData. Each track has bulk properties calculated and also contains all constituent points. Each point has properties: Frequency, TimeInRunC, TimeInAcqC, AcquisitionID, Ordinate, Threshold, NSP, NoiseMean, NoiseTau, NoiseVariance, LocalSlope
  *
- *  Created on: March 7, 2024
- *  Authors: A. Gorman, H.S. Harrington
+ * Documentation WIP by L. Malavasi 2/11/26, todos are notes to self
+ * @author A. Gorman
+ * @author H.S. Harrington
+ * @date: March 7, 2024
  */
+
+// TODO: what is a candidate vs a pre-candidate?
 
 #include "KTLongTrackFinder.hh"
 
@@ -17,13 +25,23 @@
 
 using std::vector;
 
-
+/**
+ * Namespace
+ */
 namespace Katydid
 {
     KTLOGGER(stflog, "KTLongTrackFinder");
 
     KT_REGISTER_PROCESSOR(KTLongTrackFinder, "long-track-finder");
 
+	/**
+	 * @brief Construct a KTLongTrackFinder processor.
+	 * @details
+	 * Initializes configuration parameters, internal state, signals,
+	 * and slots required for track finding.
+	 *
+	 * @param name Name of this processor instance.
+	 */
     KTLongTrackFinder::KTLongTrackFinder(const std::string& name) :
             KTProcessor(name),
             fTimeGapTolerance(0.0005),
@@ -54,10 +72,23 @@ namespace Katydid
     {
     }
 
+	/**
+	 * @brief Destructor
+	 */
     KTLongTrackFinder::~KTLongTrackFinder()
     {
     }
 
+	/**
+	 * @brief Configure the processor from a parameter node.
+	 *
+	 * @details
+	 * Reads configuration values and sets internal parameters controlling LongTrackFinder behavior.
+	 *
+	 * @param param_node Pointer to configuration parameter node.
+	 * @return true if configuration succeeds
+	 * @return false if configuration fails or if node is NULL
+	 */
     bool KTLongTrackFinder::Configure(const scarab::param_node* node)
     {
         if (node == NULL) return false;
@@ -72,7 +103,7 @@ namespace Katydid
 
         SetTimeGapTolerance(node->get_value("time-gap-tolerance", GetTimeGapTolerance()));
         SetFrequencyAcceptance(node->get_value("frequency-acceptance", GetFrequencyAcceptance()));
-        SetInitialSlope(node->get_value("initial-slope", GetInitialSlope()));
+        SetInitialSlope(node->get_value("initial-slope", GetInitialSlope())); // MODIFY GetInitialSlope FOR LARMOR SLOPE CALCULATION IF INITIAL SLOPE NOT SPECIFIED
 
         if (node->has("min-bin"))
         {
@@ -108,6 +139,14 @@ namespace Katydid
         return true;
     }
 
+	/**
+	 * @brief Initialize processor using acquisition header information.
+	 * @details
+	 * Extracts time bin width and frequency bin width from acquisition rate and FFT slice size.
+	 *
+	 * @param header Egg header containing acquisition metadata.
+	 * @return true on success
+	 */
     bool KTLongTrackFinder::InitializeWithHeader(KTEggHeader& header)
     {
         fTimeBinWidth = 1. / header.GetAcquisitionRate();
@@ -116,7 +155,19 @@ namespace Katydid
         return true;
     }
 
-    bool KTLongTrackFinder::CollectDiscrimPointsFromSlice(KTSliceHeader& slHeader, KTDiscriminatedPoints1DData& discrimPoints)
+
+	/**
+	 * @brief Process discriminated points in a single time slice
+	 * @details Identifies points within frequency acceptance of existing line candidates. Start new line candidates at any line that is not matched up to existing line candidates.
+	 * TODO: this seems to do similar things to DoesPointMatchLine and GetPointsNearTrack, review with Heather what the difference is and where each lives in the analysis chain.
+	 *
+	 * @param slHeader Slice header containing time metadata.
+	 * @param discrimPoints Discriminated point data from the slice.
+	 * @return true on successful processing.
+	 */
+    bool KTLongTrackFinder::CollectDiscrimPointsFromSlice(
+			KTSliceHeader& slHeader, 
+			KTDiscriminatedPoints1DData& discrimPoints)
     {
         unsigned minBin = fCalculateMinBin ? fMinFrequency / (double) slHeader.GetBinWidth() : fMinBin;
         unsigned maxBin = fCalculateMaxBin ? fMaxFrequency / (double) slHeader.GetBinWidth() : fMaxBin;
@@ -126,14 +177,19 @@ namespace Katydid
         KTDEBUG( stflog, "fTimeBinWidth "<<fTimeBinWidth<<" fFreqBinWidth "<<fFreqBinWidth);
 
 
+		// TODO: what is a "component"? This could be more descriptive...
+		// TODO: having a hard time following the logical flow in this block
         unsigned nComponents = 1;
 
         for (unsigned iComponent = 0; iComponent < nComponents; ++iComponent)
         {
+			// Record time at center of time slice. Header records left edge, add half of slice length.
             double timeInRunC = slHeader.GetTimeInRun() + 0.5 * slHeader.GetSliceLength();
             double timeInAcqC = slHeader.GetTimeInAcq() + 0.5 * slHeader.GetSliceLength();
             int acqID = slHeader.GetAcquisitionID();
 
+			// select discriminated points with frequency bin between minBin and maxBin
+			// TODO: are point.first and point.second time and frequency coordinates or something else? Confused. Could be more descriptive
             STFFrequencySortedPoints points;
             for (auto& point : discrimPoints.GetSetOfPoints(iComponent))
             {
@@ -146,10 +202,17 @@ namespace Katydid
 
             KTDEBUG( stflog, "Collected "<<points.size()<<" points");
 
+			// Assign discriminated points to existing track candidates
             AddPointsToExistingTracks(points, fActiveLines, timeInRunC, timeInAcqC, acqID);
 
+			
+			// Iterate over active lines including points from new slice
+			// If new point is more than TimeGapTolerance from previous point in track
+			// or number of points in track is greater than MaxPoints (not currently used, 
+			// fMaxPoints = 1e8 to ignore it) then end the active line not incl. new point.
             for(auto trackIt = fActiveLines.begin(); trackIt != fActiveLines.end();) {
-                if(timeInRunC - trackIt->GetPoints().back().TimeInRunC > fTimeGapTolerance or trackIt->GetPoints().size() >= fMaxPoints) {
+                if(timeInRunC - trackIt->GetPoints().back().TimeInRunC > fTimeGapTolerance 
+						or trackIt->GetPoints().size() >= fMaxPoints) {
                     KTDEBUG(stflog, "trackIt->GetPoints().back().TimeInRunC "<<trackIt->GetPoints().back().TimeInRunC);
                     HandleFinishedTrack(*trackIt); // let the vector sort itself by earliest track instead of longest track
                     trackIt = fActiveLines.erase(trackIt);
@@ -158,13 +221,29 @@ namespace Katydid
                 }
             }
 
+			// create new track candidates from the remaining points, add to list of active lines
             auto newTracks = CreateNewTracks(points, timeInRunC, timeInAcqC, acqID);
             fActiveLines.splice(fActiveLines.end(), newTracks);
         }
         return true;
     }
 
-    std::list<KTLongTrackData> KTLongTrackFinder::CreateNewTracks(STFFrequencySortedPoints& points, double timeInRunC, double timeInAcqC, int acqID) const {
+	/**
+	 * @brief Create new tracks from SequentialTrackFinder points
+	 * @details Start new track candidates from points that have not been identified as part of an active track candidate
+	 *
+	 * @param points Frequency-sorted points from SequentialTrackFinder
+	 * @param timeInRunC Time in run.
+	 * @param timeInAcqC Time in acquisition.
+	 * @param acqID Acquisition ID.
+	 * @return List of new tracks
+	 */
+    std::list<KTLongTrackData> KTLongTrackFinder::CreateNewTracks(
+			STFFrequencySortedPoints& points, 
+			double timeInRunC, 
+			double timeInAcqC, 
+			int acqID) const 
+	{
         auto newTracks = std::list<KTLongTrackData>();
 
         // TODO: Pick out best point from cluster, like we do when adding to existing tracks. For now, all non-claimed points.
@@ -179,30 +258,53 @@ namespace Katydid
         return newTracks;
     }
 
+	/**
+	 * @brief Adds matching points to existing tracks
+	 * @details 
+	 * 1. Gather all points (track + matching) into one structure
+	 * 2. Select points from most recent fNSlopeSlices unique time slices
+	 * 3. Compute the slope
+	 *
+	 * @param points Points in slice which match existing tracks.
+	 * @param tracks Tracks to which to append points.
+	 * @param timeInRunC Time in run.
+	 * @param timeInAcqC Time in acquisition.
+	 * @param acqID Acquisition ID.
+	 */
     void KTLongTrackFinder::AddPointsToExistingTracks(
             STFFrequencySortedPoints& points,
             std::list<KTLongTrackData>& tracks,
-            double timeInRunC, double timeInAcqC, int acqID) const {
+            double timeInRunC, 
+			double timeInAcqC, 
+			int acqID) const 
+	{
         for (auto& track : tracks) {
-            if(points.empty()) { break; }  // Break early when we run out of points
-                //KTDEBUG(stflog, "Checking for matched for track with track.GetPoints().size() "<<track.GetPoints().size());
+			// Break early when we run out of points
+            if(points.empty()) { 
+				break; 
+			}  
+			// KTDEBUG(stflog, "Checking for matched for track with track.GetPoints().size() "<<track.GetPoints().size());
+
             std::vector<KTDiscriminatedPoints1DData::Point> matchingPoints = GetPointsNearTrack(points, track, timeInRunC);
+
             if(matchingPoints.size()>0){
                 KTDEBUG(stflog, "Number of matching points: " << matchingPoints.size());
             }
             
-
             if(!matchingPoints.empty()) {
                 for (const auto& p : matchingPoints) {
-                    KTDEBUG(stflog, "Frequency: " << p.fAbscissa << ", Power: " << p.fOrdinate<< ", Tau: " << p.fTau<< ", SNR: " << p.fOrdinate/p.fTau);
+                    KTDEBUG(stflog, "Frequency: " << p.fAbscissa 
+							     << ", Power: " << p.fOrdinate
+								 << ", Tau: " << p.fTau
+								 << ", SNR: " << p.fOrdinate/p.fTau);
                 }
+
                 // 1. Gather all points (track + matching) into one structure
-                /*
-                This map groups time slices (TimeInRunC) → list of (TimeInRunC, Frequency) pairs.
-                Keys: TimeInRunC values (the slice centers)
-                Values: std::vector<std::pair<double, double>>, i.e., all (TimeInRunC, Frequency) points in that slice
-                std::greater<> ensures descending time order (most recent first)
-                */
+                //
+				// This map groups time slices (TimeInRunC) → list of (TimeInRunC, Frequency) pairs.
+				// Keys: TimeInRunC values (the slice centers)
+                // Values: std::vector<std::pair<double, double>>, i.e., all (TimeInRunC, Frequency) points in that slice
+                // std::greater<> ensures descending time order (most recent first)
                 std::map<double, std::vector<std::pair<double, double>>, std::greater<>> timeToTimeFreqPairs;
 
                 // Track points: KTLongTrackData::Point
@@ -214,6 +316,7 @@ namespace Katydid
                 for (const auto& p : matchingPoints) {
                     timeToTimeFreqPairs[timeInRunC].emplace_back(timeInRunC, p.fAbscissa);  // fAbscissa is the frequency
                 }
+
                 // 2. Select points from most recent fNSlopeSlices unique time slices
                 std::vector<std::pair<double, double>> slopeCalcPoints;
                 int slicesIncluded = 0;
@@ -249,8 +352,21 @@ namespace Katydid
 
 
 
+	/**
+	 * @brief Constructs a vector of all points near a track in a slice.
+	 * @details
+	 * Iterates over all points and adds them to the output vector if the point matches the line according toKTLongTrackFinder::DoesPointMatchLine().
+	 *
+	 * @param sortedPoints Frequency-sorted points from in one slice SequentialTrackFinder. 
+	 * @param track Track data to compare against.
+	 * @param timeInRunC Slice time in run.
+	 * @return Vector of points near track to consider.
+	 */
     std::vector<KTDiscriminatedPoints1DData::Point> KTLongTrackFinder::GetPointsNearTrack(
-            const STFFrequencySortedPoints& sortedPoints, const KTLongTrackData& track, double timeInRunC) const {
+            const STFFrequencySortedPoints& sortedPoints, 
+			const KTLongTrackData& track, 
+			double timeInRunC) const 
+	{
 
         // We can do some cool binary search or whatever to speed things up.
         // This will just look at every point to find matching points
@@ -266,20 +382,34 @@ namespace Katydid
     }
 
 
-    bool KTLongTrackFinder::DoesPointMatchLine(const KTLongTrackData& track, double newTime, double newFrequency) const {
+	/**
+	 * @brief Determines if a new point matches an existing track candidate.
+	 * @details Decision tree to determine if a new point should belong to an active track candidate. For tracks with more than 2 points, compute previous local slopes and project frequency acceptance band. Add point if it falls within frequency acceptance and does not lower minimum slope below fMinSlope.
+	 * Fallback for tracks with 2 or fewer points: just decide based on if new point falls within frequency acceptance based on most recent point group. Slopes can be noisy with too few points. 
+	 *
+	 * @param track Existing line candidate to compare against.
+	 * @param newTime Time coordinate of new point.
+	 * @param newFrequency Frequency coordinate of new point.
+	 * @return true if point matches
+	 */
+    bool KTLongTrackFinder::DoesPointMatchLine(
+			const KTLongTrackData& track, 
+			double newTime, 
+			double newFrequency) const 
+	{
         auto trackPoints = track.GetPoints();
         double effectiveAcceptance = fFrequencyAcceptance;
         double predictedActualFrequencyDelta = std::numeric_limits<double>::max();
 
         if (trackPoints.size() >= 3) {
-            // Step 1: Group points by TimeInRunC (descending)
+            // Group points by TimeInRunC (descending)
             std::map<double, std::vector<const Katydid::KTLongTrackData::Point*>, std::greater<>> timeToPoints;
             for (auto it = trackPoints.rbegin(); it != trackPoints.rend(); ++it) {
                 timeToPoints[it->TimeInRunC].push_back(&(*it));
                 if (timeToPoints.size() >= 2) break;
             }
 
-            // Step 2: Median freq and slope from last two slices
+            // Median freq and slope from last two slices
             std::vector<std::pair<double, double>> medFreqAndSlope;
             for (const auto& time_pointPair : timeToPoints) {
                 const double& time = time_pointPair.first;
@@ -299,7 +429,7 @@ namespace Katydid
                 medFreqAndSlope.emplace_back(medianFreq, slope);
             }
 
-            // Step 3: Compare slopes
+            // Compare slopes, expand effective acceptance if there is a significant difference
             double slope0 = medFreqAndSlope[0].second;
             double slope1 = medFreqAndSlope[1].second;
             double relativeSlopeDiff = std::abs(slope0 - slope1) / std::abs(slope1);
@@ -309,14 +439,16 @@ namespace Katydid
                 KTDEBUG(stflog, "Previous slopes differ significantly (" << slope0 << " vs " << slope1 << "). Doubling acceptance to " << effectiveAcceptance);
             }
 
-            // Step 4: Predict frequency using most recent median + slope
+            // Predict frequency using most recent median + slope
             double t0 = timeToPoints.begin()->first;
             double f0 = medFreqAndSlope[0].first;
             double slope = medFreqAndSlope[0].second;
             double predictedFrequency = f0 + slope * (newTime - t0);
             predictedActualFrequencyDelta = std::abs(newFrequency - predictedFrequency);
 
-            // Final decision
+            // Final decision:
+			// 1. If predicted frequency is within the acceptance band, AND
+			// 2. If new slope from adding this point is NOT less than fMinSlope
             if (predictedActualFrequencyDelta < effectiveAcceptance) {
                 KTDEBUG(stflog, "Point matches track. Acceptance: " << effectiveAcceptance
                            << ", predicted delta: " << predictedActualFrequencyDelta);
@@ -387,6 +519,13 @@ namespace Katydid
 
     }
 
+	/**
+	 * @brief Handle and emit or discard a finished track
+	 * @details
+	 * If track is sufficiently long (# points > fMinPoints) and slope > min slope, then emit the line pre-candidate.
+	 *
+	 * @param track Finished track.
+	 */
     void KTLongTrackFinder::HandleFinishedTrack(KTLongTrackData& track) {
         if (track.GetPoints().size() >= fMinPoints and track.GetBulkSlope() >= fMinSlope) {
             KTWARN(stflog, "Found line candidate");
@@ -394,6 +533,13 @@ namespace Katydid
         }
     }
 
+	/**
+	 * @brief Routine for emitting a line pre-candidate
+	 * @details
+	 * Set up a Nymph data object. Set its track/event ID, other metadata. Write track points and compute track statistics.
+	 *
+	 * @param track Finished track to emit as a pre-candidate.
+	 */
     void KTLongTrackFinder::EmitPreCandidate(KTLongTrackData& track)
     {
         KTDEBUG(stflog, "emitting candidate");
@@ -416,6 +562,10 @@ namespace Katydid
         fLineSignal(data);
     }
 
+	/**
+	 * @brief Handle acquisition completeion
+	 * @details Handles any remaining track candidates that have not been emitted at the end of acquisition.
+	 */
     void KTLongTrackFinder::AcquisitionIsOver()
     {
         KTINFO(stflog, "Got egg-done signal. Checking remaining line candidates");
@@ -423,6 +573,7 @@ namespace Katydid
         auto lineIt = fActiveLines.begin();
         while( lineIt != fActiveLines.end())
         {
+	 		// TODO: this code seems redundant with HandleFinishedTrack, can it be simplified?
             if (lineIt->GetPoints().size() >= fMinPoints and lineIt->GetPoints().size() <= fMaxPoints
                 and lineIt->GetBulkSlope() > fMinSlope) {
                 EmitPreCandidate(*lineIt);
@@ -433,10 +584,14 @@ namespace Katydid
         KTDEBUG(stflog, "Now there should be no lines left over " << fActiveLines.empty());
     }
 
-    /*
-     * Calculates the slope of the end of the track using least squares.
-     * Takes a vector of (time,frequency) pairs, ordered by time, oldest to most recent
-     */
+	/**
+	 * @brief Calculates the slope of the end of the track using least squares.
+	 * @details
+	 * Takes a vector of (time,frequency) pairs, ordered by time, oldest to most recent
+	 *
+	 * @param points Points in track
+	 * @return Local slope value in Hz/s (TODO: double check units)
+	 */
     double KTLongTrackFinder::CalculateLocalSlope(const std::vector<std::pair<double, double>>& points) const {
         for (const auto& p : points) {
             KTDEBUG(stflog, "Time: " << p.first << ", Frequency: " << p.second);
@@ -461,8 +616,22 @@ namespace Katydid
         return (maxPoints * sumXY - sumX * sumY)/(sumXX * maxPoints - sumX * sumX);
     }
 
-    KTLongTrackData::Point KTLongTrackFinder::CreatePoint(
-            const KTDiscriminatedPoints1DData::Point &point, double timeInRunC, double timeInAcqC, int acqID, double trackFinderSlope) {
+	/**
+	 * @brief Create a track point from a discriminated point.
+	 * @details Constructs KTLongTrackData::Point from KTDiscriminatedPoints1DData::Point and track information.
+	 * @param point Input discriminated point.
+	 * @param timeInRunC Time in run.
+	 * @param timeInAcqC Time in acquisition.
+	 * @param acqID Acquisition ID.
+	 * @param trackFinderSlope Current slope estimate.
+	 * @return Constructed track point.
+	 */
+	KTLongTrackData::Point KTLongTrackFinder::CreatePoint(
+            const KTDiscriminatedPoints1DData::Point &point, 
+			double timeInRunC, 
+			double timeInAcqC, 
+			int acqID, 
+			double trackFinderSlope) {
         return {
                 timeInRunC,
                 timeInAcqC,
