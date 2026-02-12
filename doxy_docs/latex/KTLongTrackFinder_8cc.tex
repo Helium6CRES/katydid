@@ -1,0 +1,42 @@
+\doxysection{Source/\+Spectrum\+Analysis/\+KTLong\+Track\+Finder.cc File Reference}
+\hypertarget{KTLongTrackFinder_8cc}{}\label{KTLongTrackFinder_8cc}\index{Source/SpectrumAnalysis/KTLongTrackFinder.cc@{Source/SpectrumAnalysis/KTLongTrackFinder.cc}}
+
+
+KTLong\+Track\+Finder processor.  
+
+
+{\ttfamily \#include "{}KTLong\+Track\+Finder.\+hh"{}}\newline
+{\ttfamily \#include "{}KTLogger.\+hh"{}}\newline
+{\ttfamily \#include "{}KTEgg\+Header.\+hh"{}}\newline
+{\ttfamily \#include "{}KTSlice\+Header.\+hh"{}}\newline
+{\ttfamily \#include "{}KTDiscriminated\+Points1\+DData.\+hh"{}}\newline
+{\ttfamily \#include $<$cmath$>$}\newline
+\doxysubsubsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+namespace \mbox{\hyperlink{namespaceKatydid}{Katydid}}
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{namespaceKatydid_a00eb90a63fcff8c2f993e90a115bd5ed}\label{namespaceKatydid_a00eb90a63fcff8c2f993e90a115bd5ed} 
+{\bfseries Katydid\+::\+KTLOGGER} (stflog, "{}KTLong\+Track\+Finder"{})
+\item 
+\Hypertarget{namespaceKatydid_a406c0aadfa2a8b3449c6f0eb13dec54b}\label{namespaceKatydid_a406c0aadfa2a8b3449c6f0eb13dec54b} 
+{\bfseries Katydid\+::\+KT\+\_\+\+REGISTER\+\_\+\+PROCESSOR} (\mbox{\hyperlink{classKatydid_1_1KTLongTrackFinder}{KTLong\+Track\+Finder}}, "{}long-\/track-\/finder"{})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+KTLong\+Track\+Finder processor. 
+
+Finds and creates track from discriminator data Builds track candidates slice-\/by slice by trying to add over-\/threshold points to active tracks. When track is found to end, it is emitted as a new Data Pointer of type KTLong\+Track\+Data. Each track has bulk properties calculated and also contains all constituent points. Each point has properties\+: Frequency, Time\+In\+RunC, Time\+In\+AcqC, Acquisition\+ID, Ordinate, Threshold, NSP, Noise\+Mean, Noise\+Tau, Noise\+Variance, Local\+Slope
+
+Documentation WIP by L. Malavasi 2/11/26, todos are notes to self \begin{DoxyAuthor}{Author}
+A. Gorman 
+
+H.\+S. Harrington 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+\+: March 7, 2024 
+\end{DoxyDate}

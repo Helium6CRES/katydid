@@ -1,0 +1,51 @@
+\doxysection{Katydid\+::KTLong\+Track\+Finder\+::KTDiscrimined\+Point\+Frequency\+Sorter Struct Reference}
+\hypertarget{structKatydid_1_1KTLongTrackFinder_1_1KTDiscriminedPointFrequencySorter}{}\label{structKatydid_1_1KTLongTrackFinder_1_1KTDiscriminedPointFrequencySorter}\index{Katydid::KTLongTrackFinder::KTDiscriminedPointFrequencySorter@{Katydid::KTLongTrackFinder::KTDiscriminedPointFrequencySorter}}
+
+
+Comparator for sorting discriminated points by frequency.  
+
+
+
+
+{\ttfamily \#include $<$KTLong\+Track\+Finder.\+hh$>$}
+
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{structKatydid_1_1KTLongTrackFinder_1_1KTDiscriminedPointFrequencySorter_aaf0e14fce6fbc2b87ad09070379216c9}{operator()}} (const KTDiscriminated\+Points1\+DData\+::\+Point \&lhs, const KTDiscriminated\+Points1\+DData\+::\+Point \&rhs) const
+\begin{DoxyCompactList}\small\item\em Comparison operator. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Comparator for sorting discriminated points by frequency. 
+
+Function object that sorts points by frequency. This allows us to find points near to existing tracks efficiently. 
+
+\label{doc-func-members}
+\Hypertarget{structKatydid_1_1KTLongTrackFinder_1_1KTDiscriminedPointFrequencySorter_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{structKatydid_1_1KTLongTrackFinder_1_1KTDiscriminedPointFrequencySorter_aaf0e14fce6fbc2b87ad09070379216c9}\index{Katydid::KTLongTrackFinder::KTDiscriminedPointFrequencySorter@{Katydid::KTLongTrackFinder::KTDiscriminedPointFrequencySorter}!operator()@{operator()}}
+\index{operator()@{operator()}!Katydid::KTLongTrackFinder::KTDiscriminedPointFrequencySorter@{Katydid::KTLongTrackFinder::KTDiscriminedPointFrequencySorter}}
+\doxysubsubsection{\texorpdfstring{operator()()}{operator()()}}
+{\footnotesize\ttfamily \label{structKatydid_1_1KTLongTrackFinder_1_1KTDiscriminedPointFrequencySorter_aaf0e14fce6fbc2b87ad09070379216c9} 
+bool Katydid\+::\+KTLong\+Track\+Finder\+::\+KTDiscrimined\+Point\+Frequency\+Sorter\+::operator() (\begin{DoxyParamCaption}\item[{const KTDiscriminated\+Points1\+DData\+::\+Point \&}]{lhs}{, }\item[{const KTDiscriminated\+Points1\+DData\+::\+Point \&}]{rhs}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Comparison operator. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em lhs} & Left-\/hand side point \\
+\hline
+{\em rhs} & Right-\/hand point. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if lhs should be ordered before rhs, else false 
+\end{DoxyReturn}
+
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Source/\+Spectrum\+Analysis/\mbox{\hyperlink{KTLongTrackFinder_8hh}{KTLong\+Track\+Finder.\+hh}}\end{DoxyCompactItemize}

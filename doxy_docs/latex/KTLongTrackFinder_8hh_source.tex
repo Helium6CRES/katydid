@@ -1,0 +1,167 @@
+\doxysection{KTLong\+Track\+Finder.\+hh}
+\hypertarget{KTLongTrackFinder_8hh_source}{}\label{KTLongTrackFinder_8hh_source}\index{Source/SpectrumAnalysis/KTLongTrackFinder.hh@{Source/SpectrumAnalysis/KTLongTrackFinder.hh}}
+\mbox{\hyperlink{KTLongTrackFinder_8hh}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ }
+\DoxyCodeLine{00009\ }
+\DoxyCodeLine{00010\ \textcolor{preprocessor}{\#ifndef\ KTLONGTRACKFINDER\_HH\_}}
+\DoxyCodeLine{00011\ \textcolor{preprocessor}{\#define\ KTLONGTRACKFINDER\_HH\_}}
+\DoxyCodeLine{00012\ }
+\DoxyCodeLine{00013\ \textcolor{preprocessor}{\#include\ "{}KTProcessor.hh"{}}}
+\DoxyCodeLine{00014\ }
+\DoxyCodeLine{00015\ \textcolor{preprocessor}{\#include\ "{}KTDiscriminatedPoints1DData.hh"{}}}
+\DoxyCodeLine{00016\ \textcolor{preprocessor}{\#include\ "{}KTDiscriminatedPoint.hh"{}}}
+\DoxyCodeLine{00017\ \textcolor{preprocessor}{\#include\ "{}KTKDTreeData.hh"{}}}
+\DoxyCodeLine{00018\ }
+\DoxyCodeLine{00019\ \textcolor{preprocessor}{\#include\ "{}KTMemberVariable.hh"{}}}
+\DoxyCodeLine{00020\ \textcolor{preprocessor}{\#include\ "{}KTSlot.hh"{}}}
+\DoxyCodeLine{00021\ \textcolor{preprocessor}{\#include\ "{}KTLongTrackData.hh"{}}}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \textcolor{preprocessor}{\#include\ <set>}}
+\DoxyCodeLine{00024\ }
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{keyword}{namespace\ }\mbox{\hyperlink{namespaceKatydid}{Katydid}}}
+\DoxyCodeLine{00027\ \{}
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{keyword}{class\ }KTEggHeader;}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{keyword}{class\ }KTPowerSpectrum;}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{keyword}{class\ }KTPowerSpectrumData;}
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{keyword}{class\ }KTLongTrackData;}
+\DoxyCodeLine{00032\ \ \ \ \ \textcolor{keyword}{class\ }KTSliceHeader;}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00066\ }
+\DoxyCodeLine{00067\ }
+\DoxyCodeLine{00068\ \ \ \ \ \textcolor{keyword}{class\ }\mbox{\hyperlink{classKatydid_1_1KTLongTrackFinder_af63def09dffaa3466a3b084443e5185f}{KTLongTrackFinder}}\ :\ \textcolor{keyword}{public}\ Nymph::KTProcessor}
+\DoxyCodeLine{00069\ \ \ \ \ \{}
+\DoxyCodeLine{00070\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00071\ }
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structKatydid_1_1KTLongTrackFinder_1_1KTDiscriminedPointFrequencySorter}{KTDiscriminedPointFrequencySorter}}}
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \ \ \ \ \{}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{structKatydid_1_1KTLongTrackFinder_1_1KTDiscriminedPointFrequencySorter_aaf0e14fce6fbc2b87ad09070379216c9}{operator()\ }}(}
+\DoxyCodeLine{00089\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ KTDiscriminatedPoints1DData::Point\&\ lhs,\ }
+\DoxyCodeLine{00090\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ KTDiscriminatedPoints1DData::Point\&\ rhs)\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00091\ \textcolor{keyword}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }\{}
+\DoxyCodeLine{00092\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ lhs.fAbscissa\ <\ rhs.fAbscissa;}
+\DoxyCodeLine{00093\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00094\ \ \ \ \ \ \ \ \ \ \ \ \ \};}
+\DoxyCodeLine{00095\ }
+\DoxyCodeLine{00097\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{typedef}\ std::set<\ KTDiscriminatedPoints1DData::Point,\ KTDiscriminedPointFrequencySorter\ >\ \mbox{\hyperlink{classKatydid_1_1KTLongTrackFinder_ac08a48207a5b8d4b348aadec1208c0f5}{STFFrequencySortedPoints}};}
+\DoxyCodeLine{00098\ }
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00100\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00105\ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classKatydid_1_1KTLongTrackFinder_af63def09dffaa3466a3b084443e5185f}{KTLongTrackFinder}}(\textcolor{keyword}{const}\ std::string\&\ name\ =\ \textcolor{stringliteral}{"{}track-\/finder"{}});}
+\DoxyCodeLine{00106\ }
+\DoxyCodeLine{00110\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{virtual}\ \mbox{\hyperlink{classKatydid_1_1KTLongTrackFinder_ac6d903c581665522d9f26e3bfe47436f}{\string~KTLongTrackFinder}}();}
+\DoxyCodeLine{00111\ }
+\DoxyCodeLine{00117\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classKatydid_1_1KTLongTrackFinder_a9c8dfaadeb3ad64e9421355ca8432c05}{Configure}}(\textcolor{keyword}{const}\ scarab::param\_node*\ node);}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00119\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00120\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Parameters\ for\ point\ collection}}
+\DoxyCodeLine{00121\ \ \ \ \ \ \ \ \ \ \ \ \ MEMBERVARIABLE(\textcolor{keywordtype}{double},\ InitialSlope);}
+\DoxyCodeLine{00122\ \ \ \ \ \ \ \ \ \ \ \ \ MEMBERVARIABLE(\textcolor{keywordtype}{signed},\ NSlopeSlices);}
+\DoxyCodeLine{00123\ \ \ \ \ \ \ \ \ \ \ \ \ MEMBERVARIABLE(\textcolor{keywordtype}{double},\ FrequencyAcceptance);}
+\DoxyCodeLine{00124\ \ \ \ \ \ \ \ \ \ \ \ \ MEMBERVARIABLE(\textcolor{keywordtype}{double},\ InitialFrequencyAcceptance);}
+\DoxyCodeLine{00125\ \ \ \ \ \ \ \ \ \ \ \ \ MEMBERVARIABLE(\textcolor{keywordtype}{double},\ InitialTimeAcceptance);}
+\DoxyCodeLine{00126\ \ \ \ \ \ \ \ \ \ \ \ \ MEMBERVARIABLE(\textcolor{keywordtype}{double},\ TimeGapTolerance);}
+\DoxyCodeLine{00127\ \ \ \ \ \ \ \ \ \ \ \ \ MEMBERVARIABLE(\textcolor{keywordtype}{double},\ RelSlopeDiffToExpand);}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Parameters\ for\ line\ post-\/processing}}
+\DoxyCodeLine{00130\ \ \ \ \ \ \ \ \ \ \ \ \ MEMBERVARIABLE(\textcolor{keywordtype}{unsigned},\ MinPoints);}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \ \ \ \ MEMBERVARIABLE(\textcolor{keywordtype}{unsigned},\ MaxPoints);}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \ \ \ \ MEMBERVARIABLE(\textcolor{keywordtype}{double},\ MinSlope);}
+\DoxyCodeLine{00133\ }
+\DoxyCodeLine{00134\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Other\ configuration}}
+\DoxyCodeLine{00135\ \ \ \ \ \ \ \ \ \ \ \ \ MEMBERVARIABLE(\textcolor{keywordtype}{unsigned},\ MinBin);}
+\DoxyCodeLine{00136\ \ \ \ \ \ \ \ \ \ \ \ \ MEMBERVARIABLE(\textcolor{keywordtype}{unsigned},\ MaxBin);}
+\DoxyCodeLine{00137\ \ \ \ \ \ \ \ \ \ \ \ \ MEMBERVARIABLE(\textcolor{keywordtype}{bool},\ CalculateMinBin);}
+\DoxyCodeLine{00138\ \ \ \ \ \ \ \ \ \ \ \ \ MEMBERVARIABLE(\textcolor{keywordtype}{bool},\ CalculateMaxBin);}
+\DoxyCodeLine{00139\ \ \ \ \ \ \ \ \ \ \ \ \ MEMBERVARIABLE(\textcolor{keywordtype}{double},\ FreqBinWidth);}
+\DoxyCodeLine{00140\ \ \ \ \ \ \ \ \ \ \ \ \ MEMBERVARIABLE(\textcolor{keywordtype}{double},\ TimeBinWidth);}
+\DoxyCodeLine{00141\ \ \ \ \ \ \ \ \ \ \ \ \ MEMBERVARIABLE(\textcolor{keywordtype}{double},\ MinFrequency);}
+\DoxyCodeLine{00142\ \ \ \ \ \ \ \ \ \ \ \ \ MEMBERVARIABLE(\textcolor{keywordtype}{double},\ MaxFrequency);}
+\DoxyCodeLine{00143\ }
+\DoxyCodeLine{00144\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Internal\ tracking\ of\ number\ of\ candidates\ emitted}}
+\DoxyCodeLine{00145\ \ \ \ \ \ \ \ \ \ \ \ \ MEMBERVARIABLE\_PROTECTED(\textcolor{keywordtype}{unsigned},\ NCandidatesEmitted);}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \ \ \ \ \ \ \ \ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00153\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classKatydid_1_1KTLongTrackFinder_a0ab9e944880560e2d2b2bb722369839a}{InitializeWithHeader}}(KTEggHeader\&\ header);}
+\DoxyCodeLine{00154\ }
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{classKatydid_1_1KTLongTrackFinder_aef1ce039c113c8bd13fc3a2c9c2d744d}{CollectDiscrimPointsFromSlice}}(}
+\DoxyCodeLine{00162\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ KTSliceHeader\&\ slHeader,\ }
+\DoxyCodeLine{00163\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ KTDiscriminatedPoints1DData\&\ discrimPoints);}
+\DoxyCodeLine{00164\ }
+\DoxyCodeLine{00169\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classKatydid_1_1KTLongTrackFinder_a0607996b2eb1372b1d34b0dcf5a4c79b}{EmitPreCandidate}}(KTLongTrackData\&\ track);}
+\DoxyCodeLine{00170\ }
+\DoxyCodeLine{00174\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{classKatydid_1_1KTLongTrackFinder_aaea860706792507f63c9975c89c35dea}{AcquisitionIsOver}}();}
+\DoxyCodeLine{00175\ }
+\DoxyCodeLine{00180\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ std::set<\ Nymph::KTDataPtr\ >\&\ \mbox{\hyperlink{classKatydid_1_1KTLongTrackFinder_ae88e1556159cd7920077b9c58dfc76c5}{GetCandidates}}()\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00181\ }
+\DoxyCodeLine{00182\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00183\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//***************}}
+\DoxyCodeLine{00184\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Tracks}}
+\DoxyCodeLine{00185\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//***************}}
+\DoxyCodeLine{00186\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Tracks\ are\ implicitly\ sorted\ from\ oldest\ to\ newest}}
+\DoxyCodeLine{00188\ \ \ \ \ \ \ \ \ \ \ \ \ std::list<KTLongTrackData>\ fActiveLines;}
+\DoxyCodeLine{00189\ }
+\DoxyCodeLine{00191\ \ \ \ \ \ \ \ \ \ \ \ \ std::set<\ Nymph::KTDataPtr\ >\ fCandidates;}
+\DoxyCodeLine{00192\ }
+\DoxyCodeLine{00193\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//***************}}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Signals}}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//***************}}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \ \ \ \ Nymph::KTSignalData\ fLineSignal;}
+\DoxyCodeLine{00199\ }
+\DoxyCodeLine{00201\ \ \ \ \ \ \ \ \ \ \ \ \ Nymph::KTSignalOneArg<\ void\ >\ fClusterDoneSignal;}
+\DoxyCodeLine{00202\ }
+\DoxyCodeLine{00203\ \ \ \ \ \ \ \ \ \textcolor{keyword}{private}:}
+\DoxyCodeLine{00204\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//***************}}
+\DoxyCodeLine{00205\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Slots}}
+\DoxyCodeLine{00206\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{comment}{//***************}}
+\DoxyCodeLine{00207\ }
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \ \ \ \ Nymph::KTSlotDataOneType<\ KTEggHeader\ >\ fHeaderSlot;}
+\DoxyCodeLine{00210\ }
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ \ \ \ \ Nymph::KTSlotDataTwoTypes<\ KTSliceHeader,\ KTDiscriminatedPoints1DData\ >\ fDiscrimSlot;}
+\DoxyCodeLine{00213\ }
+\DoxyCodeLine{00215\ \ \ \ \ \ \ \ \ \ \ \ \ Nymph::KTSlotDone\ fDoneSlot;}
+\DoxyCodeLine{00216\ }
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ HandleFinishedTrack(KTLongTrackData\&\ track);}
+\DoxyCodeLine{00222\ }
+\DoxyCodeLine{00230\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{bool}\ DoesPointMatchLine(\textcolor{keyword}{const}\ KTLongTrackData\&\ track,\ }
+\DoxyCodeLine{00231\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ newTime,\ }
+\DoxyCodeLine{00232\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ newFrequency)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00233\ }
+\DoxyCodeLine{00242\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{void}\ AddPointsToExistingTracks(}
+\DoxyCodeLine{00243\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classKatydid_1_1KTLongTrackFinder_ac08a48207a5b8d4b348aadec1208c0f5}{STFFrequencySortedPoints}}\ \&points,\ }
+\DoxyCodeLine{00244\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ std::list<KTLongTrackData>\ \&tracks,\ }
+\DoxyCodeLine{00245\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ timeInRunC,\ }
+\DoxyCodeLine{00246\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ timeInAcqC,\ }
+\DoxyCodeLine{00247\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ acqID)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00248\ }
+\DoxyCodeLine{00256\ \ \ \ \ \ \ \ \ \ \ \ \ std::vector<KTDiscriminatedPoints1DData::Point>\ GetPointsNearTrack(}
+\DoxyCodeLine{00257\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ \mbox{\hyperlink{classKatydid_1_1KTLongTrackFinder_ac08a48207a5b8d4b348aadec1208c0f5}{STFFrequencySortedPoints}}\&\ sortedPoints,\ }
+\DoxyCodeLine{00258\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ KTLongTrackData\&\ track,\ }
+\DoxyCodeLine{00259\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ timeInRunC)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00260\ }
+\DoxyCodeLine{00269\ \ \ \ \ \ \ \ \ \ \ \ \ std::list<KTLongTrackData>\ CreateNewTracks(}
+\DoxyCodeLine{00270\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \mbox{\hyperlink{classKatydid_1_1KTLongTrackFinder_ac08a48207a5b8d4b348aadec1208c0f5}{STFFrequencySortedPoints}}\ \&points,\ }
+\DoxyCodeLine{00271\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ timeInRunC,\ }
+\DoxyCodeLine{00272\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ timeInAcqC,\ }
+\DoxyCodeLine{00273\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ acqID)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00274\ }
+\DoxyCodeLine{00280\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ CalculateLocalSlope(\textcolor{keyword}{const}\ std::vector<std::pair<double,\ double>>\&\ points)\ \textcolor{keyword}{const};}
+\DoxyCodeLine{00281\ }
+\DoxyCodeLine{00291\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{static}\ KTLongTrackData::Point\ CreatePoint(}
+\DoxyCodeLine{00292\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keyword}{const}\ KTDiscriminatedPoints1DData::Point\ \&point,\ }
+\DoxyCodeLine{00293\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ timeInRunC,\ }
+\DoxyCodeLine{00294\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ timeInAcqC,\ }
+\DoxyCodeLine{00295\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{int}\ acqID,\ }
+\DoxyCodeLine{00296\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ trackFinderSlope)\ ;}
+\DoxyCodeLine{00297\ \ \ \ \ \};}
+\DoxyCodeLine{00298\ \ \ \ \ \textcolor{keyword}{inline}\ \textcolor{keyword}{const}\ std::set<\ Nymph::KTDataPtr\ >\&\ \mbox{\hyperlink{classKatydid_1_1KTLongTrackFinder_ae88e1556159cd7920077b9c58dfc76c5}{KTLongTrackFinder::GetCandidates}}()\textcolor{keyword}{\ const}}
+\DoxyCodeLine{00299\ \textcolor{keyword}{\ \ \ \ }\{}
+\DoxyCodeLine{00300\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ fCandidates;}
+\DoxyCodeLine{00301\ \ \ \ \ \}}
+\DoxyCodeLine{00302\ }
+\DoxyCodeLine{00303\ \}\ \textcolor{comment}{/*\ namespace\ Katydid\ */}}
+\DoxyCodeLine{00304\ \textcolor{preprocessor}{\#endif\ }\textcolor{comment}{/*\ KTLONGTRACKFINDER\_HH\_\ */}\textcolor{preprocessor}{}}
+
+\end{DoxyCode}

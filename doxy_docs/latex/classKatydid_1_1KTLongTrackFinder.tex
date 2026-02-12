@@ -1,0 +1,322 @@
+\doxysection{Katydid\+::KTLong\+Track\+Finder Class Reference}
+\hypertarget{classKatydid_1_1KTLongTrackFinder}{}\label{classKatydid_1_1KTLongTrackFinder}\index{Katydid::KTLongTrackFinder@{Katydid::KTLongTrackFinder}}
+
+
+Collects points from sparse spectrogram into linear tracks.  
+
+
+
+
+{\ttfamily \#include $<$KTLong\+Track\+Finder.\+hh$>$}
+
+Inheritance diagram for Katydid\+::KTLong\+Track\+Finder\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classKatydid_1_1KTLongTrackFinder}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structKatydid_1_1KTLongTrackFinder_1_1KTDiscriminedPointFrequencySorter}{KTDiscrimined\+Point\+Frequency\+Sorter}}
+\begin{DoxyCompactList}\small\item\em Comparator for sorting discriminated points by frequency. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_ac08a48207a5b8d4b348aadec1208c0f5}\label{classKatydid_1_1KTLongTrackFinder_ac08a48207a5b8d4b348aadec1208c0f5} 
+typedef std\+::set$<$ KTDiscriminated\+Points1\+DData\+::\+Point, \mbox{\hyperlink{structKatydid_1_1KTLongTrackFinder_1_1KTDiscriminedPointFrequencySorter}{KTDiscrimined\+Point\+Frequency\+Sorter}} $>$ {\bfseries STFFrequency\+Sorted\+Points}
+\begin{DoxyCompactList}\small\item\em Type alias for frequency-\/sorted discriminated points container. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classKatydid_1_1KTLongTrackFinder_af63def09dffaa3466a3b084443e5185f}{KTLong\+Track\+Finder}} (const std\+::string \&name="{}track-\/finder"{})
+\begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_ac6d903c581665522d9f26e3bfe47436f}\label{classKatydid_1_1KTLongTrackFinder_ac6d903c581665522d9f26e3bfe47436f} 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+KTLong\+Track\+Finder} ()
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classKatydid_1_1KTLongTrackFinder_a9c8dfaadeb3ad64e9421355ca8432c05}{Configure}} (const scarab\+::param\+\_\+node \texorpdfstring{$\ast$}{*}node)
+\begin{DoxyCompactList}\small\item\em Configure the processor. \end{DoxyCompactList}\item 
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_a205d07ed3862b2714ae4092ac28398ad}\label{classKatydid_1_1KTLongTrackFinder_a205d07ed3862b2714ae4092ac28398ad} 
+{\bfseries MEMBERVARIABLE} (double, Initial\+Slope)
+\item 
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_ab7cd4fb1171cf65fae22d051e72f34c6}\label{classKatydid_1_1KTLongTrackFinder_ab7cd4fb1171cf65fae22d051e72f34c6} 
+{\bfseries MEMBERVARIABLE} (signed, NSlope\+Slices)
+\item 
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_a030c13dcb0832b46a8bb41a7c00622e5}\label{classKatydid_1_1KTLongTrackFinder_a030c13dcb0832b46a8bb41a7c00622e5} 
+{\bfseries MEMBERVARIABLE} (double, Frequency\+Acceptance)
+\item 
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_a07b52f687163bb0d97369bb643ea099e}\label{classKatydid_1_1KTLongTrackFinder_a07b52f687163bb0d97369bb643ea099e} 
+{\bfseries MEMBERVARIABLE} (double, Initial\+Frequency\+Acceptance)
+\item 
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_a0bb2f9d8d6c802bef33d39548f3f3ff8}\label{classKatydid_1_1KTLongTrackFinder_a0bb2f9d8d6c802bef33d39548f3f3ff8} 
+{\bfseries MEMBERVARIABLE} (double, Initial\+Time\+Acceptance)
+\item 
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_a08fe10cb80a9d14c0c4ecd627df2c083}\label{classKatydid_1_1KTLongTrackFinder_a08fe10cb80a9d14c0c4ecd627df2c083} 
+{\bfseries MEMBERVARIABLE} (double, Time\+Gap\+Tolerance)
+\item 
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_afa9dde051b5f431a1a385dc7542bcf67}\label{classKatydid_1_1KTLongTrackFinder_afa9dde051b5f431a1a385dc7542bcf67} 
+{\bfseries MEMBERVARIABLE} (double, Rel\+Slope\+Diff\+To\+Expand)
+\item 
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_aebc51311c1d98625eaad85ad6d3e9142}\label{classKatydid_1_1KTLongTrackFinder_aebc51311c1d98625eaad85ad6d3e9142} 
+{\bfseries MEMBERVARIABLE} (unsigned, Min\+Points)
+\item 
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_a1b30ed9932debac0ff3f32862f5333d3}\label{classKatydid_1_1KTLongTrackFinder_a1b30ed9932debac0ff3f32862f5333d3} 
+{\bfseries MEMBERVARIABLE} (unsigned, Max\+Points)
+\item 
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_a7e79dce85eaa978a98d2a95b94be8054}\label{classKatydid_1_1KTLongTrackFinder_a7e79dce85eaa978a98d2a95b94be8054} 
+{\bfseries MEMBERVARIABLE} (double, Min\+Slope)
+\item 
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_add6e1dc43681cfa00cae193c960ee6ba}\label{classKatydid_1_1KTLongTrackFinder_add6e1dc43681cfa00cae193c960ee6ba} 
+{\bfseries MEMBERVARIABLE} (unsigned, Min\+Bin)
+\item 
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_adcace481bcbb3f980e44403d93b8ec3f}\label{classKatydid_1_1KTLongTrackFinder_adcace481bcbb3f980e44403d93b8ec3f} 
+{\bfseries MEMBERVARIABLE} (unsigned, Max\+Bin)
+\item 
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_a49f70743d1d86f6751d06df796e98046}\label{classKatydid_1_1KTLongTrackFinder_a49f70743d1d86f6751d06df796e98046} 
+{\bfseries MEMBERVARIABLE} (bool, Calculate\+Min\+Bin)
+\item 
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_a82e06b0401a8d0401cb10afa30a74f62}\label{classKatydid_1_1KTLongTrackFinder_a82e06b0401a8d0401cb10afa30a74f62} 
+{\bfseries MEMBERVARIABLE} (bool, Calculate\+Max\+Bin)
+\item 
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_a565cf7ac400a79a9f22fd2753130977d}\label{classKatydid_1_1KTLongTrackFinder_a565cf7ac400a79a9f22fd2753130977d} 
+{\bfseries MEMBERVARIABLE} (double, Freq\+Bin\+Width)
+\item 
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_a698359a2534325d44678783d5ba2431a}\label{classKatydid_1_1KTLongTrackFinder_a698359a2534325d44678783d5ba2431a} 
+{\bfseries MEMBERVARIABLE} (double, Time\+Bin\+Width)
+\item 
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_a2ade03799535f7b8f7e427f02f7e6455}\label{classKatydid_1_1KTLongTrackFinder_a2ade03799535f7b8f7e427f02f7e6455} 
+{\bfseries MEMBERVARIABLE} (double, Min\+Frequency)
+\item 
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_af7d22333c97c03082ad0a4f6765e739f}\label{classKatydid_1_1KTLongTrackFinder_af7d22333c97c03082ad0a4f6765e739f} 
+{\bfseries MEMBERVARIABLE} (double, Max\+Frequency)
+\item 
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_a9bddf38849a656fd16a5d9d6099274a5}\label{classKatydid_1_1KTLongTrackFinder_a9bddf38849a656fd16a5d9d6099274a5} 
+{\bfseries MEMBERVARIABLE\+\_\+\+PROTECTED} (unsigned, NCandidates\+Emitted)
+\item 
+bool \mbox{\hyperlink{classKatydid_1_1KTLongTrackFinder_a0ab9e944880560e2d2b2bb722369839a}{Initialize\+With\+Header}} (KTEgg\+Header \&header)
+\begin{DoxyCompactList}\small\item\em Initialize processor using egg header information. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{classKatydid_1_1KTLongTrackFinder_aef1ce039c113c8bd13fc3a2c9c2d744d}{Collect\+Discrim\+Points\+From\+Slice}} (KTSlice\+Header \&sl\+Header, KTDiscriminated\+Points1\+DData \&discrim\+Points)
+\begin{DoxyCompactList}\small\item\em Collect discriminated points from a slice. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classKatydid_1_1KTLongTrackFinder_a0607996b2eb1372b1d34b0dcf5a4c79b}{Emit\+Pre\+Candidate}} (KTLong\+Track\+Data \&track)
+\begin{DoxyCompactList}\small\item\em Emit a pre-\/candidate track. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{classKatydid_1_1KTLongTrackFinder_aaea860706792507f63c9975c89c35dea}{Acquisition\+Is\+Over}} ()
+\begin{DoxyCompactList}\small\item\em Handle acquisition completion. \end{DoxyCompactList}\item 
+const std\+::set$<$ Nymph\+::\+KTData\+Ptr $>$ \& \mbox{\hyperlink{classKatydid_1_1KTLongTrackFinder_ae88e1556159cd7920077b9c58dfc76c5}{Get\+Candidates}} () const
+\begin{DoxyCompactList}\small\item\em Get track candidates. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Collects points from sparse spectrogram into linear tracks. 
+
+\doxylink{classKatydid_1_1KTLongTrackFinder}{KTLong\+Track\+Finder} is designed to identify long-\/duration, variable-\/slope tracks in the sparse spectrogram data. It operates on sequential KTDiscriminated\+Point1\+DData objects emitted by the discriminator. These are single time slices containing over-\/threshold points. Configuration name\+: "{}long-\/track-\/finder"{}\hypertarget{classKatydid_1_1KTLongTrackFinder_config}{}\doxysubsection{\texorpdfstring{Available configuration values\+:}{Available configuration values\+:}}\label{classKatydid_1_1KTLongTrackFinder_config}
+
+\begin{DoxyItemize}
+\item "{}min-\/frequency"{}\+: minimum allowed frequency (has to be set)
+\item "{}max-\/frequency"{}\+: max allowed frequency (has to be set)
+\item "{}min-\/bin"{}\+: can be set instead of min frequency
+\item "{}max-\/bin"{}\+: can be set instead of max frequency
+\item "{}frequency-\/acceptance"{}\+: maximum allowed frequency distance of point to an extrapolated line (in Hz)
+\item "{}time-\/gap-\/tolerance"{}\+: max time gap before track is deemed over.
+\item "{}initial-\/frequency-\/acceptance"{}\+: if the line that a point is being compared to, only has a single point so far, this is the accepted frequency acceptance. Default is frequency\+\_\+acceptance
+\item "{}initial-\/time-\/acceptance"{}\+: if the line that a point is being compared to, only has a single point so far, this is the accepted time window. Default is time-\/gap-\/tolerance
+\item "{}initial-\/slope"{}\+: if a line has only one point, this is the line\textquotesingle{}s slope
+\item "{}rel-\/slope-\/diff-\/to-\/expand"{} If the relative difference between the local slopes at the previous two time slices was greater than this, double the frequency acceptance. To recover from adding noise or to follow resonance.
+\item "{}n-\/slope-\/slices"{}\+: maximum number of TIME SLICES to include in the slope calculation
+\item "{}min-\/points"{}\+: a line only gets converted to a track if it has collected more than this many number of points
+\item "{}max-\/points"{}\+: lines will be terminated after this many points. Good for curved tracks/resonances.
+\item "{}min-\/slope"{}\+: a line only gets converted to a track if its slope is \texorpdfstring{$>$}{>} than this slope (in Hz/s)
+\end{DoxyItemize}\hypertarget{classKatydid_1_1KTLongTrackFinder_slots}{}\doxysubsection{\texorpdfstring{Slots\+:}{Slots\+:}}\label{classKatydid_1_1KTLongTrackFinder_slots}
+
+\begin{DoxyItemize}
+\item "{}disc-\/1d"{}\+: void (KTData\+Ptr) -- clusters discriminated points to sequential lines candidates
+\item "{}done"{}\+: void () -- Processes remaining active lines and emits clustering-\/done signal
+\end{DoxyItemize}\hypertarget{classKatydid_1_1KTLongTrackFinder_signals}{}\doxysubsection{\texorpdfstring{Signals\+:}{Signals\+:}}\label{classKatydid_1_1KTLongTrackFinder_signals}
+
+\begin{DoxyItemize}
+\item "{}long-\/track-\/cand"{}\+: void (KTData\+Ptr) -- Emitted when a candidate is ready; guarantees KTLong\+Track\+Data
+\item "{}clustering-\/done"{}\+: void () -- Emitted when track clustering is complete 
+\end{DoxyItemize}
+
+\label{doc-constructors}
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_af63def09dffaa3466a3b084443e5185f}\index{Katydid::KTLongTrackFinder@{Katydid::KTLongTrackFinder}!KTLongTrackFinder@{KTLongTrackFinder}}
+\index{KTLongTrackFinder@{KTLongTrackFinder}!Katydid::KTLongTrackFinder@{Katydid::KTLongTrackFinder}}
+\doxysubsubsection{\texorpdfstring{KTLongTrackFinder()}{KTLongTrackFinder()}}
+{\footnotesize\ttfamily \label{classKatydid_1_1KTLongTrackFinder_af63def09dffaa3466a3b084443e5185f} 
+Katydid\+::\+KTLong\+Track\+Finder\+::\+KTLong\+Track\+Finder (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{name}{ = {\ttfamily "{}track-\/finder"{}}}\end{DoxyParamCaption})}
+
+
+
+Constructor. 
+
+Construct a \doxylink{classKatydid_1_1KTLongTrackFinder}{KTLong\+Track\+Finder} processor.
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Processor instance name\\
+\hline
+\end{DoxyParams}
+Initializes configuration parameters, internal state, signals, and slots required for track finding.
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of this processor instance. \\
+\hline
+\end{DoxyParams}
+
+
+\label{doc-func-members}
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_aaea860706792507f63c9975c89c35dea}\index{Katydid::KTLongTrackFinder@{Katydid::KTLongTrackFinder}!AcquisitionIsOver@{AcquisitionIsOver}}
+\index{AcquisitionIsOver@{AcquisitionIsOver}!Katydid::KTLongTrackFinder@{Katydid::KTLongTrackFinder}}
+\doxysubsubsection{\texorpdfstring{AcquisitionIsOver()}{AcquisitionIsOver()}}
+{\footnotesize\ttfamily \label{classKatydid_1_1KTLongTrackFinder_aaea860706792507f63c9975c89c35dea} 
+void Katydid\+::\+KTLong\+Track\+Finder\+::\+Acquisition\+Is\+Over (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Handle acquisition completion. 
+
+Handle acquisition completeion.
+
+Handles any remaining track candidates that have not been emitted at the end of acquisition. \Hypertarget{classKatydid_1_1KTLongTrackFinder_aef1ce039c113c8bd13fc3a2c9c2d744d}\index{Katydid::KTLongTrackFinder@{Katydid::KTLongTrackFinder}!CollectDiscrimPointsFromSlice@{CollectDiscrimPointsFromSlice}}
+\index{CollectDiscrimPointsFromSlice@{CollectDiscrimPointsFromSlice}!Katydid::KTLongTrackFinder@{Katydid::KTLongTrackFinder}}
+\doxysubsubsection{\texorpdfstring{CollectDiscrimPointsFromSlice()}{CollectDiscrimPointsFromSlice()}}
+{\footnotesize\ttfamily \label{classKatydid_1_1KTLongTrackFinder_aef1ce039c113c8bd13fc3a2c9c2d744d} 
+bool Katydid\+::\+KTLong\+Track\+Finder\+::\+Collect\+Discrim\+Points\+From\+Slice (\begin{DoxyParamCaption}\item[{KTSlice\+Header \&}]{sl\+Header}{, }\item[{KTDiscriminated\+Points1\+DData \&}]{discrim\+Points}{}\end{DoxyParamCaption})}
+
+
+
+Collect discriminated points from a slice. 
+
+Process discriminated points in a single time slice.
+
+
+\begin{DoxyParams}{Parameters}
+{\em sl\+Header} & Slice header. \\
+\hline
+{\em discrim\+Points} & Discriminated points data. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true on success
+\end{DoxyReturn}
+Identifies points within frequency acceptance of existing line candidates. Start new line candidates at any line that is not matched up to existing line candidates. TODO\+: this seems to do similar things to Does\+Point\+Match\+Line and Get\+Points\+Near\+Track, review with Heather what the difference is and where each lives in the analysis chain.
+
+
+\begin{DoxyParams}{Parameters}
+{\em sl\+Header} & Slice header containing time metadata. \\
+\hline
+{\em discrim\+Points} & Discriminated point data from the slice. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true on successful processing. 
+\end{DoxyReturn}
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_a9c8dfaadeb3ad64e9421355ca8432c05}\index{Katydid::KTLongTrackFinder@{Katydid::KTLongTrackFinder}!Configure@{Configure}}
+\index{Configure@{Configure}!Katydid::KTLongTrackFinder@{Katydid::KTLongTrackFinder}}
+\doxysubsubsection{\texorpdfstring{Configure()}{Configure()}}
+{\footnotesize\ttfamily \label{classKatydid_1_1KTLongTrackFinder_a9c8dfaadeb3ad64e9421355ca8432c05} 
+bool Katydid\+::\+KTLong\+Track\+Finder\+::\+Configure (\begin{DoxyParamCaption}\item[{const scarab\+::param\+\_\+node \texorpdfstring{$\ast$}{*}}]{node}{}\end{DoxyParamCaption})}
+
+
+
+Configure the processor. 
+
+Configure the processor from a parameter node.
+
+
+\begin{DoxyParams}{Parameters}
+{\em node} & Configuration parameter node. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true on successful configuration.
+\end{DoxyReturn}
+Reads configuration values and sets internal parameters controlling Long\+Track\+Finder behavior.
+
+
+\begin{DoxyParams}{Parameters}
+{\em param\+\_\+node} & Pointer to configuration parameter node. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if configuration succeeds 
+
+false if configuration fails or if node is NULL 
+\end{DoxyReturn}
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_a0607996b2eb1372b1d34b0dcf5a4c79b}\index{Katydid::KTLongTrackFinder@{Katydid::KTLongTrackFinder}!EmitPreCandidate@{EmitPreCandidate}}
+\index{EmitPreCandidate@{EmitPreCandidate}!Katydid::KTLongTrackFinder@{Katydid::KTLongTrackFinder}}
+\doxysubsubsection{\texorpdfstring{EmitPreCandidate()}{EmitPreCandidate()}}
+{\footnotesize\ttfamily \label{classKatydid_1_1KTLongTrackFinder_a0607996b2eb1372b1d34b0dcf5a4c79b} 
+void Katydid\+::\+KTLong\+Track\+Finder\+::\+Emit\+Pre\+Candidate (\begin{DoxyParamCaption}\item[{KTLong\+Track\+Data \&}]{track}{}\end{DoxyParamCaption})}
+
+
+
+Emit a pre-\/candidate track. 
+
+Routine for emitting a line pre-\/candidate.
+
+
+\begin{DoxyParams}{Parameters}
+{\em track} & Track data to emit\\
+\hline
+\end{DoxyParams}
+Set up a Nymph data object. Set its track/event ID, other metadata. Write track points and compute track statistics.
+
+
+\begin{DoxyParams}{Parameters}
+{\em track} & Finished track to emit as a pre-\/candidate. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_ae88e1556159cd7920077b9c58dfc76c5}\index{Katydid::KTLongTrackFinder@{Katydid::KTLongTrackFinder}!GetCandidates@{GetCandidates}}
+\index{GetCandidates@{GetCandidates}!Katydid::KTLongTrackFinder@{Katydid::KTLongTrackFinder}}
+\doxysubsubsection{\texorpdfstring{GetCandidates()}{GetCandidates()}}
+{\footnotesize\ttfamily \label{classKatydid_1_1KTLongTrackFinder_ae88e1556159cd7920077b9c58dfc76c5} 
+const std\+::set$<$ Nymph\+::\+KTData\+Ptr $>$ \& Katydid\+::\+KTLong\+Track\+Finder\+::\+Get\+Candidates (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Get track candidates. 
+
+\begin{DoxyReturn}{Returns}
+Set of candidate data pointers. 
+\end{DoxyReturn}
+\Hypertarget{classKatydid_1_1KTLongTrackFinder_a0ab9e944880560e2d2b2bb722369839a}\index{Katydid::KTLongTrackFinder@{Katydid::KTLongTrackFinder}!InitializeWithHeader@{InitializeWithHeader}}
+\index{InitializeWithHeader@{InitializeWithHeader}!Katydid::KTLongTrackFinder@{Katydid::KTLongTrackFinder}}
+\doxysubsubsection{\texorpdfstring{InitializeWithHeader()}{InitializeWithHeader()}}
+{\footnotesize\ttfamily \label{classKatydid_1_1KTLongTrackFinder_a0ab9e944880560e2d2b2bb722369839a} 
+bool Katydid\+::\+KTLong\+Track\+Finder\+::\+Initialize\+With\+Header (\begin{DoxyParamCaption}\item[{KTEgg\+Header \&}]{header}{}\end{DoxyParamCaption})}
+
+
+
+Initialize processor using egg header information. 
+
+Initialize processor using acquisition header information.
+
+
+\begin{DoxyParams}{Parameters}
+{\em header} & Egg header object \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true on success
+\end{DoxyReturn}
+Extracts time bin width and frequency bin width from acquisition rate and FFT slice size.
+
+
+\begin{DoxyParams}{Parameters}
+{\em header} & Egg header containing acquisition metadata. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true on success 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Source/\+Spectrum\+Analysis/\mbox{\hyperlink{KTLongTrackFinder_8hh}{KTLong\+Track\+Finder.\+hh}}\item 
+Source/\+Spectrum\+Analysis/\mbox{\hyperlink{KTLongTrackFinder_8cc}{KTLong\+Track\+Finder.\+cc}}\end{DoxyCompactItemize}
