@@ -1,10 +1,10 @@
 /**
- @file KTLongTrackFinder.hh
- @brief Contains KTLongTrackFinder
- @details Finds and creates track from discriminator data
- @author A. Gorman
- @author H.S. Harrington
- @date: March 7, 2024
+ * @file KTLongTrackFinder.hh
+ * @brief KTLongTrackFinder processor
+ * @details Finds and creates track from discriminator data
+ * @author A. Gorman
+ * @author H.S. Harrington
+ * @date: March 7, 2024
  */
 
 #ifndef KTLONGTRACKFINDER_HH_
@@ -221,8 +221,8 @@ namespace Katydid
 			void HandleFinishedTrack(KTLongTrackData& track);
 
 			/**
-			 * @brief Check if a new point matches existing line candidate.
-			 * @param track Existing line candidate to compare to.
+			 * @brief Check if a new point matches existing track candidate.
+			 * @param track Existing line candidate to compare against.
 			 * @param newTime Time coordinate of new point.
 			 * @param newFrequency Frequency coordinate of new point.
 			 * @return true if match, else false.
@@ -233,7 +233,7 @@ namespace Katydid
 
 			/**
 			 * @brief Add matching points to existing tracks
-			 * @param points Available points from STF sorted by frequency.
+			 * @param points Available points from SequentialTrackFinder sorted by frequency.
 			 * @param tracks Active tracks.
 			 * @param timeInRunC Time in run.
 			 * @param timeInAcqC Time in acquisition.
@@ -248,7 +248,7 @@ namespace Katydid
 
 			/**
 			 * @brief Retrieve points near a given track.
-			 * @param sortedPoints Available points from STF sorted by frequency.
+			 * @param sortedPoints Available points from SequentialTrackFinder sorted by frequency.
 			 * @param track Track to compare against.
 			 * @param timeInRunC Time in run.
 			 * @return Vector of nearby points
@@ -259,8 +259,8 @@ namespace Katydid
 					double timeInRunC) const;
 
 			/**
-			 * @brief Create new tracks from STF points.
-			 * @param points Frequency-sorted points from STF
+			 * @brief Create new tracks from SequentialTrackFinder points.
+			 * @param points Frequency-sorted points from SequentialTrackFinder
 			 * @param timeInRunC Time in run.
 			 * @param timeInAcqC Time in acquisition.
 			 * @param acqID Acquisition ID.
