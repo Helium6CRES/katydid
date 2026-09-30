@@ -397,7 +397,10 @@ namespace Katydid
                 {
                     std::pair<unsigned, double> llhResult =  LLHDataGivenEvent(clusterable,partitions[i][j]);
                     if(std::isinf(llhResult.second))
+                    {
+                        logLikelihoods[i] = -std::numeric_limits<double>::infinity();
                         break;
+                    }
 
                     logLikelihoods[i] += llhResult.second;
                     labels[i][j] = llhResult.first;
