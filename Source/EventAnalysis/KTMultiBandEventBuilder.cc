@@ -299,10 +299,10 @@ namespace Katydid
         double maxEndTime = tracksStartTimeSort[0]->GetTrackStats().EndTimeInRunC;
         for(unsigned i=1;i<nTracks;++i)
         {
-            if(tracks[i]->GetTrackStats().StartTimeInRunC > maxEndTime)
+            if(tracksStartTimeSort[i]->GetTrackStats().StartTimeInRunC > maxEndTime)
                 return false;
 
-            maxEndTime = std::max(maxEndTime, tracks[i]->GetTrackStats().EndTimeInRunC);
+            maxEndTime = std::max(maxEndTime, tracksStartTimeSort[i]->GetTrackStats().EndTimeInRunC);
         }
 
         //Check if any pairs of bands are projected to cross over the trap acq. If so, the event should not be joined together
